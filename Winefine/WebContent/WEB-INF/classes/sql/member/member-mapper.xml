@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="loginMember">
+		SELECT *
+		FROM MEMBER
+		WHERE USER_ID=?
+		    AND USER_PWD=?
+		    AND STATUS='Y'
+	</entry>
+	
+	<entry key="insertMember">
+		INSERT INTO MEMBER(USER_NO,
+						   USER_ID, 
+						   USER_PWD, 
+						   USER_NAME, 
+						   PHONE,
+						   EMAIL,
+						   USER_SSN) 
+		VALUES(SEQ_UNO.NEXTVAL,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?)
+	</entry>
+	
+	<entry key="selectMemberId">
+		SELECT USER_ID, USER_NO 
+		FROM MEMBER 
+		WHERE USER_NAME=? 
+		  AND PHONE=? 
+		  AND STATUS='Y'
+	</entry>
+	
+	<entry key="updateMember1">
+		UPDATE MEMBER
+		   SET USER_NAME = ?,
+		   	   EMAIL = ?,
+		   	   PHONE = ?
+		 WHERE USER_NO = ?
+	</entry>
+	
+	<entry key="updateMember2">
+		UPDATE MEMBER
+		   SET USER_NAME = ?,
+		   	   EMAIL = ?,
+		   	   PHONE = ?,
+		   	   USER_PWD = ?
+		 WHERE USER_NO = ?
+	</entry>
+	
+	<entry key="selectOneMember">
+		SELECT *
+		FROM MEMBER
+		WHERE USER_NO = ?
+		  AND STATUS = 'Y'
+	</entry>
+	
+	<entry key="deleteMember">
+		UPDATE MEMBER
+		   SET STATUS = 'N'
+		 WHERE USER_NO = ?
+	</entry>	
+	
+	<entry key="checkId">
+	SELECT COUNT(*) 
+	FROM MEMBER 
+	WHERE USER_ID=? 
+	  AND STATUS='Y'
+	</entry>
+	
+	<entry key="checkEmail">
+	SELECT COUNT(*) 
+	FROM MEMBER 
+	WHERE EMAIL=? 
+	  AND STATUS='Y'
+	</entry>
+	
+	<entry key="selectMemberPwd">
+	SELECT USER_NO, USER_NAME 
+	FROM MEMBER 
+	WHERE USER_ID=? 
+	  AND USER_NAME=? 
+	  AND EMAIL=? 
+	  AND STATUS='Y'
+	</entry>
+	
+	<entry key="selectPwd">
+	SELECT * 
+	FROM MEMBER 
+	WHERE USER_ID=? 
+	  AND USER_NAME=? 
+	  AND PHONE=? 
+	  AND STATUS='Y' 
+	</entry>
+	
+	<entry key="resetPwd">
+	UPDATE MEMBER 
+	   SET USER_PWD=? 
+	 WHERE USER_NO=? 
+	   AND STATUS='Y'  
+	</entry>
+	
+	<entry key="updateRandomPwd">
+	UPDATE MEMBER 
+	   SET USER_PWD=? 
+	 WHERE USER_ID=? 
+	   AND STATUS='Y'  
+	</entry>
+	
+	
+	<entry key="selectMemberListCount">
+	SELECT COUNT(*) COUNT 
+	FROM MEMBER 
+	WHERE STATUS='Y'
+	</entry>
+	
+	<entry key="selectMemberList">
+	SELECT *
+	FROM(SELECT ROWNUM RNUM, A.*
+		FROM(SELECT ROWNUM, 
+				   USER_NO, 
+				   USER_ID, 
+				   USER_PWD, 
+				   USER_NAME,
+				   PHONE,
+				   EMAIL, 
+				   ENROLL_DATE,
+				   USER_SSN, 
+				   BLACKLIST, 
+				   STATUS 
+			FROM MEMBER 
+
+			ORDER BY USER_NO DESC) A) 
+	WHERE RNUM BETWEEN ? AND ?	
+	</entry>
+	
+	<entry key="updateMemberAdmin">
+	UPDATE MEMBER 
+	   SET BLACKLIST=? 
+	 WHERE USER_NO=? 
+	</entry>
+	
+	<entry key="selectOneMember2">
+		SELECT *
+		FROM MEMBER
+		WHERE USER_NO = ? 
+	</entry>
+</properties>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

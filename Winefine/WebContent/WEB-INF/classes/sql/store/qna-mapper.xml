@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	
+	<entry key="selectListCount">
+		SELECT COUNT(*) "COUNT"
+		FROM QNA
+		WHERE STATUS = 'Y'
+	</entry>
+	
+	<entry key="selectList">
+	    SELECT *
+	    FROM(SELECT ROWNUM RNUM, QNA.*
+	         FROM(  SELECT QNA_NO, QNA_OPEN, QNA_TITLE, Q.CREATE_DATE, USER_ID, Q.COUNT, ANSWER_YN, QNA_CONTENT, QNA_PHOTO, ANSWER, ANSWER_DATE
+	                  FROM QNA Q
+	                  JOIN MEMBER M ON (M.USER_NO = Q.QNA_WRITER)
+	                  JOIN PRODUCT P ON(P.PRODUCT_NO=Q.PRODUCT_NO)
+	                 WHERE Q.STATUS= 'Y'
+	                   AND Q.PRODUCT_NO = ? 
+	                 ORDER BY Q.CREATE_DATE DESC) "QNA")
+	    WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="insertQnaPhoto">
+	INSERT INTO QNA(QNA_NO, 
+                PRODUCT_NO,
+                QNA_WRITER,
+                QNA_TITLE,
+                QNA_CONTENT,
+                QNA_PHOTO)
+	                
+	VALUES(SEQ_QNO.NEXTVAL,
+	        ?,
+	        ?,
+	        ?,
+	        ?,
+	        ?)
+	</entry>
+	
+	<entry key="insertQnaPhotoX">
+	INSERT INTO QNA(QNA_NO, 
+                PRODUCT_NO,
+                QNA_WRITER,
+                QNA_TITLE,
+                QNA_CONTENT)
+	                
+	VALUES(SEQ_QNO.NEXTVAL,
+	        ?,
+	        ?,
+	        ?,
+	        ?)
+	</entry>
+	
+   <entry key="qnaInsertAnswer">
+	   UPDATE QNA
+	      SET ANSWER = ?,
+	           ANSWER_YN = 'Y',
+	           ANSWER_DATE = SYSDATE
+	       WHERE QNA_NO = ?
+	         AND STATUS='Y'
+   </entry>
+   
+    <entry key="selectQnaList">
+   		SELECT QNA_NO, Q.PRODUCT_NO, QNA_OPEN, QNA_TITLE, Q.CREATE_DATE, USER_ID, Q.COUNT, ANSWER_YN, QNA_CONTENT, QNA_PHOTO, ANSWER, ANSWER_DATE
+        FROM QNA Q
+        JOIN MEMBER M ON (M.USER_NO = Q.QNA_WRITER)
+        JOIN PRODUCT P ON (P.PRODUCT_NO = Q.PRODUCT_NO)
+       WHERE Q.STATUS= 'Y'
+         AND QNA_WRITER = ? 
+       ORDER BY Q.CREATE_DATE DESC
+   </entry>
+	
+	
+</properties>

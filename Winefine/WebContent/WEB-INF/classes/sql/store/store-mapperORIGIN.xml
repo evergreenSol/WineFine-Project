@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+<!-- 쿼리문에 ; 절대 금지 금지금지금지 ★ -->
+
+	<entry key="selectProduct">
+		SELECT *
+		FROM PRODUCT
+		ORDER BY PRODUCT_NO
+	</entry>
+	
+	<entry key="insertProduct">
+		INSERT INTO PRODUCT(PRODUCT_NO, PRODUCT_TYPE, PRODUCT_NAME, PRICE, BRAND, ALCOHOL, STOCK, ORIGIN,
+							SWEETNESS, ACIDITY, BODY, TANNIN, STATUS, COUNT, 
+							THUMBNAIL, CONTENT_PHOTO1, CONTENT_PHOTO2, CONTENT)
+		VALUES(SEQ_PNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, 
+			   ?, ?, ?, ?, ?, '0', 
+			   ?, ?, ?, ?)
+	</entry>
+	
+	<entry key="selectOneProduct">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_NO = ?
+	</entry>
+	
+	<entry key="updateProduct1">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   THUMBNAIL = ?,
+		   	   CONTENT_PHOTO1 = ?,
+		   	   CONTENT_PHOTO2 = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="updateProduct2">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   THUMBNAIL = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="updateProduct3">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   CONTENT_PHOTO1 = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="updateProduct4">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   CONTENT_PHOTO2 = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="updateProduct5">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   THUMBNAIL = ?,
+		   	   CONTENT_PHOTO1 = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="updateProduct6">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   CONTENT_PHOTO1 = ?,
+		   	   CONTENT_PHOTO2 = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	<entry key="updateProduct7">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   THUMBNAIL = ?,
+		   	   CONTENT_PHOTO2 = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="updateProduct8">
+		UPDATE PRODUCT
+		   SET PRODUCT_TYPE = ?,
+		   	   PRODUCT_NAME = ?,
+		   	   PRICE = ?,
+		   	   BRAND = ?,
+		   	   ALCOHOL = ?,
+		   	   STOCK = ?,
+		   	   ORIGIN = ?,
+		   	   SWEETNESS = ?,
+		   	   ACIDITY = ?,
+		   	   BODY = ?,
+		   	   TANNIN = ?,
+		   	   STATUS = ?,
+		   	   CONTENT = ?
+   	     WHERE PRODUCT_NO = ?	 
+	</entry>
+	
+	<entry key="sortProductType">
+		SELECT * 
+		FROM PRODUCT
+		ORDER BY PRODUCT_TYPE
+	</entry>
+
+	<entry key="sortProductOrigin">
+		SELECT * 
+		FROM PRODUCT
+		ORDER BY ORIGIN
+	</entry>
+	
+	<entry key="sortProductPrice">
+		SELECT * 
+		FROM PRODUCT
+		ORDER BY PRICE	
+	</entry>
+	
+	<entry key="sortProductTaste">
+		SELECT * 
+		FROM PRODUCT
+		ORDER BY ALCOHOL 
+	</entry>
+	
+	<entry key="revisionStockCount">
+		UPDATE PRODUCT
+		   SET STOCK = STOCK - ?,
+		       COUNT = COUNT + ?
+		 WHERE PRODUCT_NO = ?
+	</entry>
+	
+	<entry key="selectProductSearch">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_NAME LIKE ?
+		   OR BRAND LIKE ?
+		   OR ORIGIN LIKE ?
+		ORDER BY PRODUCT_NO
+	</entry>
+	
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT
+		FROM Product
+	</entry>
+	
+	<entry key="selectProductPage">
+	SELECT *
+	FROM(SELECT ROWNUM RNUM, A.*
+      	 FROM (SELECT *
+               FROM PRODUCT
+               ORDER BY PRODUCT_NO) A)
+	WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	
+</properties>

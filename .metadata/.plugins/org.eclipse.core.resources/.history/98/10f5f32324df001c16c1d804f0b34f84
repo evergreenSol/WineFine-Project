@@ -1,0 +1,89 @@
+package com.winefine.store.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.winefine.common.model.vo.PageNation;
+import com.winefine.store.model.service.ProductService;
+import com.winefine.store.model.service.QnaService;
+import com.winefine.store.model.service.ReviewService;
+import com.winefine.store.model.vo.Product;
+import com.winefine.store.model.vo.Qna;
+import com.winefine.store.model.vo.Review;
+
+/**
+ * Servlet implementation class ReviewController
+ */
+@WebServlet("/review")
+public class ReviewController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ReviewController() {
+        super();
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int productNo = Integer.parseInt(request.getParameter("pno"));
+		
+		Product p = new ProductService().selectOneProduct(productNo);
+
+		request.setAttribute("p", p);
+		
+		// 페이징처리 변수 설정
+		int listCount;
+		int currentPage;
+		int pageLimit;
+		int boardLimit;
+		
+		int maxPage;
+		int startPage;
+		int endPage;
+		
+		listCount = new ReviewService().selectListCount();
+		currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		pageLimit = 5;
+		boardLimit = 10;
+		maxPage = (int)Math.ceil((double)listCount / boardLimit); 
+		startPage = ((currentPage-1) / pageLimit) * pageLimit + 1;
+		endPage = startPage + pageLimit - 1 ;
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 1) 페이지 정보들을 하나의 공간에 담아서 보내도록 VO 클래스 만들 것 (PageNation클래스)
+		PageNation pn = new PageNation(listCount, currentPage, pageLimit, boardLimit, 
+										maxPage, startPage, endPage);
+		
+		// 2) 현재 사용자가 요청한 페이지에 보여질 게시글 리스트 조회해오기
+		ArrayList<Review> reviewList= new ReviewService().selectList(pn, productNo);
+		
+		// 3) 요청에 따른 응답으로 보내줄 값(list)이 있으니 수화물("키", 밸류) 보내기 
+		request.setAttribute("reviewList", reviewList);
+		request.setAttribute("pn", pn);
+		
+		// 0) 포워딩 
+		request.getRequestDispatcher("views/store/reviewListView.jsp").forward(request,response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+}

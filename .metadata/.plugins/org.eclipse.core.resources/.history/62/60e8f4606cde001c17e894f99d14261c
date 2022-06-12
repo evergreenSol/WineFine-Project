@@ -1,0 +1,227 @@
+package com.winefine.oneqna.model.dao;
+
+import static com.winefine.common.JDBCTemplate.close;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
+
+import com.winefine.notice.model.vo.Notice;
+import com.winefine.oneqna.model.vo.Category;
+import com.winefine.oneqna.model.vo.Oneqna;
+
+public class OneqnaDao {
+	
+	private Properties prop = new Properties();
+	
+	public OneqnaDao() {
+		
+		String fileName = Notice.class.getResource("/sql/oneqna/oneqna-mapper.xml").getPath();
+		
+		try {
+			prop.loadFromXML(new FileInputStream(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<Oneqna> selectOneqnaList(Connection conn) {
+		
+		// SELECT 문 => ResultSet 여러행 조회
+		ArrayList<Oneqna> list = new ArrayList<>();
+		
+		PreparedStatement pstmt = null;
+		
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectOneqnaList");
+		
+		try {
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				
+				Oneqna o = new Oneqna();
+				o.setOneqnaNo(rset.getInt("ONE_QNA_NO"));
+				o.setOneqnaWriter(rset.getString("USER_ID"));
+				o.setCategoryNo(rset.getString("CATEGORY_NAME"));
+				o.setPhone(rset.getString("PHONE"));
+				o.setOneqnaTitle(rset.getString("ONE_QNA_TITLE"));
+				o.setCreateDate(rset.getDate("CREATE_DATE"));
+				o.setAnswerDate(rset.getDate("ANSWER_DATE"));
+				o.setAnswerYn(rset.getString("ANSWER_YN"));
+				
+				list.add(o);
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return list;
+	}
+	
+	public int insertOneqna(Connection conn, Oneqna o) {
+		
+		// INSERT문
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("insertOneqna");
+		
+		try {
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, o.getPhone());
+			pstmt.setInt(2, Integer.parseInt(o.getCategoryNo()));
+			pstmt.setString(3, o.getOneqnaTitle());
+			pstmt.setString(4, o.getOneqnaContent());
+			pstmt.setInt(5, Integer.parseInt(o.getOneqnaWriter()));
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	public Oneqna selectOneqna(Connection conn, int oneqnaNo) {
+		
+		// SELECT
+		
+		Oneqna o = null;
+		
+		PreparedStatement pstmt = null;
+		
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectOneqna");
+		
+		try {
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, oneqnaNo);
+			
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				o = new Oneqna();
+				o.setOneqnaNo(rset.getInt("ONE_QNA_NO"));
+				o.setOneqnaWriter(rset.getString("USER_ID"));
+				o.setCategoryNo(rset.getString("CATEGORY_NAME"));
+				o.setCreateDate(rset.getDate("CREATE_DATE"));
+				o.setOneqnaTitle(rset.getString("ONE_QNA_TITLE"));
+				o.setOneqnaContent(rset.getString("ONE_QNA_CONTENT"));
+				o.setAnswer(rset.getString("ANSWER"));
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return o;
+	}
+	
+	public ArrayList<Category> selectCategoryList(Connection conn) { 
+		
+		ArrayList<Category> list = new ArrayList<>();
+		
+		PreparedStatement pstmt = null;
+		
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectCategoryList");
+		
+		try {
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				
+				list.add(new Category(rset.getInt("CATEGORY_NO")
+									, rset.getString("CATEGORY_NAME")));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			close(rset);
+			close(pstmt);
+		}
+		
+		return list;
+	}
+	
+	public int updateOneqna(Connection conn, int oneqnaNo, String answer) {
+		 
+		// UPDATE
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("updateOneqna");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, answer);
+			pstmt.setInt(2, oneqnaNo);
+			
+			
+			result = pstmt.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	public int deleteOneqna(Connection conn, int oneqnaNo) {
+		
+		// UPDATE 문
+		int result = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("deleteOneqna");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, oneqnaNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+}

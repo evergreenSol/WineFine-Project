@@ -1,0 +1,273 @@
+package com.winefine.store.model.service;
+
+import static com.winefine.common.JDBCTemplate.close;
+import static com.winefine.common.JDBCTemplate.commit;
+import static com.winefine.common.JDBCTemplate.getConnection;
+import static com.winefine.common.JDBCTemplate.rollback;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+
+import com.winefine.common.model.vo.PageInfo;
+import com.winefine.order.model.dao.OrderDao;
+import com.winefine.store.model.dao.ProductDao;
+import com.winefine.store.model.vo.Product;
+
+public class ProductService {
+	
+	// 관리자 - 상품 전체 조회 
+	public ArrayList<Product> selectProduct() {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().selectProduct(conn);
+		
+		close(conn);
+		
+		return list;
+		
+	}
+	
+	// 관리자 - 상품 등록
+	public int insertProduct(Product p) {
+		
+		Connection conn = getConnection();
+		
+		int result = new ProductDao().insertProduct(conn, p);
+		
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+		return result;
+		
+	}
+	
+	// 관리자 - 상품 상세 조회
+	public Product selectOneProduct(int productNo) {
+		
+		Connection conn = getConnection();
+		
+		Product p = new ProductDao().selectOneProduct(conn, productNo);
+		
+		close(conn);
+		return p;
+		
+	}
+	
+	// 관리자 - 상품 수정
+	public int updateProduct(Product p) {
+		
+		Connection conn = getConnection();
+		
+		 int result = new ProductDao().updateProduct(conn, p);
+		
+		 if(result > 0) {
+			commit(conn);
+		 }
+		 else {
+			 rollback(conn);
+		 }
+		 
+		 return result;
+		
+	}
+	
+	// 5. 와인'타입'별 정렬 메소드 
+	public ArrayList<Product> sortProductType() {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductType(conn);
+		
+		close(conn);
+		
+		return list;
+	}
+	
+	// 6. 와인'맛'별 정렬 메소드
+	public ArrayList<Product> sortProductTaste() {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductTaste(conn);
+		
+		close(conn);
+		
+	return list;
+}
+	
+	// 7. 와인'산지'별 정렬 메소드
+	public ArrayList<Product> sortProductOrigin(){
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductOrigin(conn);
+		
+		close(conn);
+		
+		return list;
+	}
+
+	// 8. 와인'가격'별 정렬 메소드
+	public ArrayList<Product> sortProductPrice() {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductPrice(conn);
+		
+		close(conn);
+		
+		return list;
+	}
+
+
+	
+	// 결제 과정 - 재고 주문만큼 줄이기
+	public int revisionStockCount(int productNo, int count) {
+		
+		Connection conn = getConnection();
+		
+		int result = new ProductDao().revisionStockCount(conn, productNo, count);
+		
+		if(result > 0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		
+		close(conn);
+		
+		return result;
+	}
+	 
+	// 사용자 - 키워드 검색 상품  조회 
+	public ArrayList<Product> selectProduct(String searchWord) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().selectProduct(conn, searchWord);
+		
+		close(conn);
+		
+		return list;
+		
+	}
+	
+	// 페이징용
+	public int selectListCount() {
+		
+		Connection conn = getConnection();
+		
+		int listCount = new ProductDao().selectListCount(conn);
+		
+		close(conn);
+		
+		return listCount;
+	}
+	
+	
+	// 관리자 - 상품 전체 조회 페이징 포함
+	public ArrayList<Product> selectProduct(PageInfo pi) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().selectProduct(conn, pi);
+		
+		close(conn);
+		
+		return list;
+	}
+	
+	// 수빈
+	// 2. ProductList를 조회할 메소드 
+	public ArrayList<Product> selectList(PageNation pn) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().selectList(conn, pn);
+		
+		close(conn);
+		
+		return list;
+		
+	}
+	
+	// 5. 와인'타입'별 정렬 메소드 
+	public ArrayList<Product> sortProductType(PageNation pn) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductType(conn, pn);
+		
+		close(conn);
+		
+		return list;
+	}
+	
+	// 6. 와인'맛'별 정렬 메소드
+	public ArrayList<Product> sortProductTaste(PageNation pn) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductTaste(conn, pn);
+		
+		close(conn);
+		
+	return list;
+}
+	
+	// 7. 와인'산지'별 정렬 메소드
+	public ArrayList<Product> sortProductOrigin(PageNation pn){
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductOrigin(conn, pn);
+		
+		close(conn);
+		
+		return list;
+	}
+
+	// 8. 와인'가격'별 정렬 메소드
+	public ArrayList<Product> sortProductPrice(PageNation pn) {
+		
+		Connection conn = getConnection();
+		
+		ArrayList<Product> list = new ProductDao().sortProductPrice(conn, pn);
+		
+		close(conn);
+		
+		return list;
+	}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

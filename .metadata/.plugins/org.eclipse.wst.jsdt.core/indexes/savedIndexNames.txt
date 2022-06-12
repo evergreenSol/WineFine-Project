@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+C:\Winefine-workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1005966593.index
+2942654711.index
+3930859289.index
+2424867855.index
+4142163798.index
+3135016476.index
+3479390396.index

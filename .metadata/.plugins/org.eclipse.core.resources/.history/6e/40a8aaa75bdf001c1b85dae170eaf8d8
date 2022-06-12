@@ -1,0 +1,272 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<%@ page import="java.util.ArrayList, com.winefine.store.model.vo.Product" %>
+<% 
+// 주문 생길 떄까지 막기
+     ArrayList<Product> list = (ArrayList<Product>)request.getAttribute("blist"); 
+%>
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
+        />
+        <!-- Link Swiper's CSS -->
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/swiper/swiper-bundle.min.css"
+        />
+
+        <title> WINEFINE :D </title>
+        <style>
+            /* 전체 구조 잡기*/
+            div{
+                box-sizing: border-box;
+            }
+            .wrap{
+                width: 1200px;
+                height: 2000px;
+                margin: auto;
+                position: relative;
+            }
+            .w_{
+                /* border: 1px solid red; */
+                width: 100%;
+            }
+            .top{
+               height: 10%;
+            }
+            .body{
+                height: 45%;
+            }
+            .best{
+                height: 25%;
+            }
+            
+            .bottom{
+                height: 20%;
+                position: absolute;
+                bottom: 0;
+            }
+            
+            /* 상세 항목 */
+            .swiper {
+                width: 1200px;
+                height: 720px;
+            }
+
+            .main_pics {
+                width: 100%;
+                height: 100%;
+                
+            }
+
+
+            .swiper-button-prev {
+                background: url(/winefine/resources/images/prev.png) no-repeat;
+                background-position: center;
+                background-size: 75%;
+            }
+
+            .swiper-button-next {
+                background: url(/winefine/resources/images/next.png) no-repeat;
+                background-position: center;
+                background-size: 75%;
+            }
+
+            .swiper-button-prev::after,
+            .swiper-button-next::after {
+                display: none;
+            }
+
+            .swiper-pagination-bullet {
+                background: white !important; }
+    
+    
+    		/* 상품부분*/
+        .Pthumbnail{
+            width: 210px;
+            height: 270px;
+            display: inline-block; /* 가로로 배치 */
+            margin: 15px 20px;
+        }
+        .Pthumbnail img{
+            width: 180px;
+            height: 225px;
+        }
+        .Pthumbnail img:hover{
+            cursor: pointer;
+            opacity: 0.7;
+        } 
+        p{
+            margin: 0px;
+        }
+        </style>
+    </head>
+    
+    
+    <body>
+       <div class="wrap">
+
+           <!-- top : hearder 삽입 영역 ------------------------------->
+           <div class="w_ top">
+               <!-- 헤더 START-->
+               <%@ include file="../common/header.jsp" %>
+               <!-- 헤더 END-->
+           </div>
+    
+           <!-- body : 메인 페이지의 이미지 영역 --------------------------------------->
+           <div class="fixfoot">
+
+               <div class="w_ body content">
+                   <table align="center">
+                        
+                        <td height="720px">
+                            <!-- Slider main container -->
+                            <div class="swiper mySwiper1">
+                                <!-- Additional required wrapper -->
+                                <div class="swiper-wrapper">
+                                <!-- Slides -->
+                                <div class="swiper-slide"><img src="<%= contextPath %>/resources/images/wine img1.jpg" alt="메인사진1" class="main_pics"></div>
+                                <div class="swiper-slide"><img src="<%= contextPath %>/resources/images/wine img2.jpg" alt="메인사진2" class="main_pics"></div>
+                                <div class="swiper-slide"><img src="<%= contextPath %>/resources/images/wine img3.jpg" alt="메인사진3" class="main_pics"></div>
+        
+                                </div>
+                                <!-- If we need pagination -->
+                                <div class="swiper-pagination"></div>
+                            
+                                <!-- If we need navigation buttons -->
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
+                            
+                                <!-- If we need scrollbar -->
+                                <!-- <div class="swiper-scrollbar"></div> -->
+                            </div> 
+                        </td> 
+                   </table>
+                   <br>
+               <!-- best : 베스트셀러 영역 ------------------------------------------------->
+               <div class="w_ best" style="margin-top: 30px;">
+                <!-- 베스트셀러 START-->
+                
+                
+                
+                <!-- Swiper -->
+                <div class="swiper mySwiper2">
+                    <div class="swiper-wrapper">
+
+                <!-- --------------------------------------------------------- -->
+                <!--  주문 생길 때까지 막기 -->
+                
+                <%if(list != null){ %>
+                    
+                    <% for(Product p : list) { %>
+                        <div style="width: 100%; ">
+                            <div style="height:auto;"  >
+                                <div class="swiper-slide" >
+                                    <div class="Pthumbnail" align="center" >
+                                        <input type="hidden" value="<%= p.getProductNo() %>"> <!-- 상품번호 선택용 -->
+                                            <img src="<%= p.getThumbnail() %>">
+                                            <p>
+                                                <b><%= p.getProductName() %></b><br>
+                                                ₩ <%= p.getPrice() %> / <%= p.getProductType() %> 
+                                            </p>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                            <%} %>
+                                
+                        <%}else{ %>
+                            등록된 게시물이 없습니다.
+                        <% } %>
+                                    
+                <div class="swiper-slide" ></div>
+                <div class="swiper-slide" ></div>
+                <div class="swiper-slide" ></div>
+                <div class="swiper-slide" ></div>
+               
+                <!-- 베스트셀러 END-->
+            
+            </div>
+        </div>
+               
+           </div>
+           
+           <!-- bottom : 푸터바 영역 ---------------------------------------------------->
+           <div class="w_ bottom">
+               <!-- 푸터바 START-->
+               <%@ include file="../common/footer.jsp" %>
+               <!-- 푸터바 END-->
+            
+           </div>
+       </div> 
+
+        <script>
+             const swiper1 = new Swiper('.mySwiper1', {
+            // Optional parameters
+            // direction: 'vertical',
+            loop: true,
+            autoplay: {
+                delay: 3000
+            },
+        
+            // If we need pagination
+            pagination: {
+            el: '.swiper-pagination',
+            },
+        
+            // Navigation arrows
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            // autoHeight : true // 현재 활성화된 슬라이드 높이에 맞게 버튼이 움직인다. 
+        
+            // And if we need scrollbar
+            // scrollbar: {
+            //   el: '.swiper-scrollbar',
+            // },
+             }); 
+            
+
+        </script>
+
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+        <!-- Initialize Swiper -->
+        <script>
+            var swiper2 = new Swiper(".mySwiper2", {
+            slidesPerView: 4,
+            spaceBetween: 30,
+            centeredSlides: true,
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            autoplay: {
+                    delay: 2000
+                },
+            });
+            
+        </script>
+        
+        <script>
+       $(function(){
+           $(".Pthumbnail").click(function(){
+               var pno = $(this).children().eq(0).val();
+
+               location.href="<%=contextPath%>/store.pr?pno="+pno;
+           });
+       });
+   </script>
+
+    </body>
+    </html>

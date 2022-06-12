@@ -1,0 +1,22 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+	img {
+		width: 70%;
+		
+	}
+</style>
+</head>
+<body>
+	<center>
+		<img src="/winefine/resources/images/404.png">
+	</center>
+	<h1 align="center">잘못된 경로로 접근하셨습니다.</h1>
+
+</body>
+</html>

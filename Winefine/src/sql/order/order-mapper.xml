@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+
+	<entry key="insertOrder">
+		INSERT INTO W_ORDER(ORDER_NO, ORDER_USER, PICKUP, PICKUP_DATE, ORDER_STATUS,
+							TOTAL_PRICE, LOCATION_CODE, PAYMENT_CODE)
+		VALUES (SEQ_ORDERNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)
+	</entry>
+	
+
+	<entry key="selectOrder">
+		SELECT ORDER_NO, ORDER_USER, PICKUP, PICKUP_DATE, ORDER_STATUS, TOTAL_PRICE,
+		       ORDER_DATE, LOCATION_NAME, PAYMENT
+		  FROM W_ORDER
+		  JOIN LOCATION USING(LOCATION_CODE)
+		  JOIN PAYMENT_TBL USING(PAYMENT_CODE)
+		 WHERE ORDER_USER = ?
+		 ORDER BY ORDER_NO DESC	
+	</entry>
+	
+	<entry key="selectOrderByOrderNo">
+		SELECT ORDER_NO, USER_NAME, PICKUP, PICKUP_DATE, ORDER_STATUS, TOTAL_PRICE,
+		       ORDER_DATE, LOCATION_NAME, PAYMENT
+		  FROM W_ORDER
+		  JOIN MEMBER ON (ORDER_USER = USER_NO)
+		  JOIN LOCATION USING(LOCATION_CODE)
+		  JOIN PAYMENT_TBL USING(PAYMENT_CODE)
+		 WHERE ORDER_NO = ?
+		 ORDER BY ORDER_NO DESC	
+	</entry>
+	
+
+	<entry key="insertOrderProduct">
+		INSERT INTO ORDER_PRODUCT(ORDER_PRODUCT_NO, ORDER_NO, PRODUCT_NO, P_COUNT, P_PRICE)
+		VALUES (SEQ_OPNO.NEXTVAL, ?, ?, ?, ?)
+	</entry>
+	
+	
+	<entry key="selectOrderProduct">
+		SELECT ORDER_PRODUCT_NO, ORDER_NO, PRODUCT_NO, PRODUCT_NAME, P_COUNT, P_PRICE, THUMBNAIL
+		FROM ORDER_PRODUCT P
+		JOIN PRODUCT USING(PRODUCT_NO)
+		WHERE ? = P.ORDER_NO 
+
+	</entry>
+	
+	<entry key="selectListCount">
+		SELECT COUNT(*) COUNT
+		FROM W_ORDER
+	</entry>
+
+	<entry key="selectAllOrder">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, A.*
+			  FROM(SELECT ORDER_NO, USER_ID, PICKUP, PICKUP_DATE, ORDER_STATUS, TOTAL_PRICE,
+			       		  ORDER_DATE, LOCATION_NAME, PAYMENT
+				   FROM W_ORDER
+				   JOIN MEMBER ON(ORDER_USER = USER_NO)
+				   JOIN LOCATION USING(LOCATION_CODE)
+				   JOIN PAYMENT_TBL USING(PAYMENT_CODE)
+				   ORDER BY ORDER_NO DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="updateOrder">
+		UPDATE W_ORDER
+   		SET ORDER_STATUS = CASE ORDER_STATUS WHEN '결제완료' THEN '픽업완료'
+                                        	 WHEN '픽업완료' THEN '결제대기'
+                                        	 ELSE '결제완료'
+                      	   END
+ 		WHERE ORDER_NO = ?
+	</entry>
+	
+	
+</properties>
+
+
+
+
+
+
+
+
+
+
+

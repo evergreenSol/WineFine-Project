@@ -1,0 +1,187 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+    /* 게시판 글쓰기 */
+     #board_write {
+        width:1000px;
+        position:relative;
+        margin:0 auto;
+     }
+
+     #write_area {
+        margin-top:20px;
+        font-size:15px;
+     }
+
+     #in_title, #in_title1{
+        width: 600px;
+        height: 40px;
+     }
+
+     a { /* 색상변경 안됨 */
+       color: black;
+       text-decoration: none;
+     }
+
+     #utitle {
+        outline: none;
+        border: none;
+      }
+
+     #in_title textarea {
+        font-weight:bold;
+        font-size:26px;
+        color:#333;
+        width: 900px;
+        resize: none;
+        outline: none;
+        border: none;
+     }
+
+     .wi_line {
+        border:solid 1px lightgray;
+        margin-top:10px;
+     }
+
+     #in_content {
+        height: 400px;
+     }
+
+     #in_content textarea {
+        font:14px;
+        color:#333;
+        width: 900px;
+        height: 400px;
+        resize: none;
+     }
+
+     #in_pw input {
+        font:14px;
+        margin-top:10px;
+     }
+
+     .bt_se {
+        margin-top:20px;
+        text-align:center;
+     }
+
+     .bt_se button {
+        width:100px;
+        height:30px;
+     }
+
+     #enroll-form input, #enroll-form textarea { 
+        width : 100%; 
+        box-sizing : border-box;
+     }
+
+     #in_title:focus {
+        border: none;
+    }
+
+    h1>a:hover  {
+        color : #1E90FF;
+        cursor : pointer;
+    } 
+
+    
+
+</style>
+</head>
+<body>
+<!-- 헤더 START-->
+<%@ include file="../common/adminHeader.jsp" %>
+<!-- 헤더 END-->	
+
+
+<div id="board_write">
+    <br><br>
+    <h1><a onclick="history.back();">게시판 작성</a></h1>
+
+        <div id="write_area">              
+            <form id="enroll-form" action="<%= contextPath %>/insert.th" method="post" enctype="multipart/form-data">
+				
+                <input type="hidden" name="userNo" value=" <%= loginUser.getUserNo() %>">
+				
+                <div id="in_title">
+                    <textarea name="title" id="utitle" rows="1" cols="55" placeholder="제목" maxlength="100"></textarea>
+                </div>
+            
+                <select name="boardtype" id="category">
+                    <option value="wine">와인용어</option>
+                    <option value="pairing">페어링</option>
+                    <option value="magazine">매거진</option>
+                </select>
+               
+
+                <div class="wi_line"></div>
+
+             <table align="center">
+                <tr>
+                    <th>대표이미지</th> <!-- 미리보기 기능 -->
+                    <td colspan="3"><img id="titleImg" width="300" height="300"></td>
+                </tr>
+             </table>   
+
+            <div class="wi_line"></div>
+                <div id="in_content">
+                    <textarea name="content" id="ucontent" placeholder="내용" required></textarea>
+                </div>
+                <div id="file-area">
+                    <!-- input[type=file id=file$ name=file$]*4 + Enter -->
+                    <!-- 대표이미지(썸네일) 은 필수 -->
+                    <!-- onchange : input 태그의 내용물이 변경될 때 발생하는 이벤트 -->
+                    <input type="file" id="file1" name="file1" onchange="loadImg(this, 1);" required> 
+                </div>
+                <div class="bt_se">
+                    <button type="submit">저장</button>
+                    <button type="reset">취소</button>
+                </div>
+        </form>
+    </div>
+</div>
+
+    <script>
+                $(function() {
+
+                    $("#file-area").hide();
+                    
+                    $("#titleImg").click(function() {
+                        $("#file1").click();
+                    });
+                });
+
+                function loadImg(inputFile, num) {
+
+                    if(inputFile.files.length == 1) {
+                    
+                        var reader = new FileReader();
+
+                        reader.readAsDataURL(inputFile.files[0]);
+
+                        // 파일 읽기가 완료되는 순간 실행할 함수를 정의
+                        reader.onload = function(e) {
+
+                            // 각 영역에 맞춰서 이미지 미리보기
+                            switch(num) {
+                                case 1 : $("#titleImg").attr("src", e.target.result); break;
+                            }
+                        }
+                    }
+                    else {
+                        // 선택된 파일이 존재하지 않는 경우
+                        // => 미리보기 사라지게 하기 (src 속성 제거)
+                        switch(num){
+                            case 1 : $("#titleImg").attr("src", null); break;
+                    
+                        }
+                    }
+                }
+            </script>
+</body>
+</html>

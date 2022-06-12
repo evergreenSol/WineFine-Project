@@ -1,0 +1,73 @@
+package com.winefine.member.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.winefine.cart.model.service.CartService;
+import com.winefine.cart.model.vo.Cart;
+import com.winefine.member.model.vo.Member;
+import com.winefine.worder.model.vo.WOrder;
+
+/**
+ * Servlet implementation class MyPageInsertOrderList
+ */
+@WebServlet("/insertOrder.me")
+public class MyPageInsertOrderList extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public MyPageInsertOrderList() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		String userNo = ((Member)request.getSession().getAttribute("loginUser")).getUserNo();
+		
+		String pickup = request.getParameter("수령인 name");
+		int totalPrice = 0;
+		String pickupDate = request.getParameter("수령일 name"); // 픽업 예정일
+		int locationCode = Integer.parseInt(request.getParameter("수령장소 name"));
+		int paymentCode = Integer.parseInt(request.getParameter("결제방식"));
+		ArrayList<Cart> list = new CartService().selectCartList(userNo);
+
+		if(!list.isEmpty()) {
+			for(Cart c : list) {
+				totalPrice = c.getBottle() * c.getPrice();
+				
+			}
+		}
+		
+		WOrder o = new WOrder();
+		o.setOrder_user(userNo);
+		o.setPickup(pickup);
+		o.setTotalPrice(totalPrice);
+		o.setLocationCode(locationCode);
+		o.setPaymentCode(paymentCode);
+		
+		
+		int result = new WOrderService().insertWOrder()
+	
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

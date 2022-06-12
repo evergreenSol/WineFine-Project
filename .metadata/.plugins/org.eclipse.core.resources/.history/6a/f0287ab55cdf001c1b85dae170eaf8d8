@@ -1,0 +1,278 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<%@ page import="com.winefine.store.model.vo.Product, java.util.ArrayList, com.winefine.common.model.vo.PageNation" %>
+<!-- 수화물찾기 -->
+
+<%
+
+ArrayList<Product> list = (ArrayList<Product>)request.getAttribute("list");
+    PageNation pn = (PageNation)request.getAttribute("pn");
+    
+    // 페이징바용 변수
+    int currentPage = pn.getCurrentPage();
+    int startPage = pn.getStartPage();
+    int endPage = pn.getEndPage();
+    int maxPage = pn.getMaxPage();
+    
+%>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="styleshhet" href="css/header.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> WINEFINE :D </title>
+    <style>
+        /* 전체 구조 잡기*/
+        div{
+            box-sizing: border-box;
+        }
+        .wrap{
+                width: 1200px;
+                height: 1500px;
+                margin: auto;
+        }
+        .w_{
+            width: 100%;
+        }
+        .top{
+           height: 10%;
+        }
+        .body{
+            height: 70%;
+        }
+        .bottom{
+            height: 300px;
+        }
+        
+        /* - 구조 : body 영역_ 좌측 & 우측 분할 */
+        .sortArea{
+            height: 3%;
+            padding-right: 100px;
+        }
+        .store_body{
+            width: 100%;
+            height: 97%;
+        }
+        .store_body td.body_l{
+            width: 20%;
+            vertical-align: top;
+        }
+        .store_body td.body_r{
+            width: 80%;
+            padding-left: 120px;
+        }
+        
+        /* 상세 항목 */
+        .sort{
+            float: right;
+            height: 100%;
+        }
+
+        .delete{
+            padding-left: 5%;
+            width: 90%;
+            height: 900px;
+        }
+        
+        /* 상품부분*/
+        .Pthumbnail{
+            width: 210px;
+            height: 270px;
+            float: left;
+            margin: 15px 20px;
+        }
+        .Pthumbnail img{
+            width: 180px;
+            height: 225px;
+        }
+        .Pthumbnail img:hover{
+            cursor: pointer;
+            opacity: 0.7;
+        } 
+        p{
+            margin: 0px;
+        }
+
+        /* 영상 테스트 */
+
+        .videoT {
+            width: 100%; 
+            overflow: hidden;
+            margin: 0px auto; 
+            position: relative;
+
+        }
+        .videoT.img {
+            /* position: absolute; */
+            top: 0;
+            left: 50%;
+            width: 100%;
+            transform: translateX(-50%);
+            /* z-index: 1; */
+        }
+        .videoT .bg_dark {
+            position: absolute; 
+            top: 35%;
+            /* left: 50%; */
+            width: 100%;
+            text-align: center;
+            /* z-index: 20; */
+            
+        }
+        .videoT .bg_dark span {
+            /* text-align: center;  */
+            line-height: 70px;
+            font-size: 30px; 
+            color: #ffffff;
+        }
+        /* 페이징처리 버튼 */
+        .btn-no{
+            display: inline-block;
+            border: none;
+            border-radius: 100px;
+            color: #5f5f5f;
+            font-size: 14px;            
+            background-color: #f3f0f0;
+            margin-left: 10px;
+        }
+        .btn-no:disabled {
+            color:white;
+            background-color: #6B325B;
+        }
+
+    </style>
+</head>
+
+
+<body>
+   <div class="wrap">
+        <!-- top : hearder 삽입 영역 ------------------------------->
+        <div class="w_ top">
+
+            <!-- 헤더 START-->
+            <%@ include file="../common/header.jsp" %>
+            <!-- 헤더 END-->
+
+        </div>
+
+       <!-- body : 카테고리 페이지 바디 영역 --------------------------------------------->
+        <div class="w_ body" style="height:1400px;">
+            <div class="videoT">
+
+                <div class="img">
+                    <br>
+                    <video width="100%" height="auto" autoplay muted loop playsinline>
+                        <source src="/winefine/resources/images/videos.mp4">
+                    </video>
+                </div>
+                <h2 class="bg_dark">
+                    <span>Time for Wine, WINEFINE</span>
+                </h2>
+            </div>
+            
+           
+           <!-- sort : 정렬 원래 영역 여백으로 남겨둠------------------------------------------------------------>
+           <div class="w_ sortArea">
+           </div>
+
+           <!-- body left(카테고리) & right(상품리스트)-->
+           <table class="store_body">
+               <tr>
+                    <td class="body_l">
+                        <%@ include file="../common/category-store.jsp" %>
+                    </td>
+                    
+                    <td class="body_r" style="width:950px; height: 1200px; position: absolute;">
+                        <div style="width: 100%; height:35px; padding-right: 50px; margin:0px; position: relative;" >
+                            <!-- <select name="selectSort" class="sort">
+                                <option>최신상품순</option>
+                                <option>낮은가격순</option>
+                                <option>높은가격순</option>
+                                <option>리뷰많은순</option>
+                                <option>인기상품순</option>
+                            </select> -->
+                            
+                        </div>
+
+                        <div style="width: 100%; height:950px;">
+                            <div style="height:950px;">
+                                <%if(!list.isEmpty()){ %>
+                                        <% for(Product p : list) { %>
+                                        <div class="Pthumbnail" align="center">
+                                        <input type="hidden" value="<%= p.getProductNo() %>"> <!-- 상품번호 선택용 -->
+                                            <img src="<%= p.getThumbnail() %>">
+                                            <p>
+                                                <b><%= p.getProductName() %></b><br>
+                                                ₩ <%= p.getPrice() %> / 도수: <%= p.getAlcohol() %>%
+                                            </p>
+                                        </div>
+                                        <%} %>
+                                    <%}else{ %>
+                                        등록된 게시물이 없습니다.
+                                    <% } %>
+                            </div>
+                            <br clear="both">
+                            <!----------------------------------------------------->
+                        
+                        
+                        </div>
+                        <div style="padding: 0px;">
+                        <!-- 페이징바 영역 START-->
+                        <div class="paging-area" style="padding-left:250px">
+                                                            
+                            <!-- 현재 페이지가 1이 아니라면 : "<" 버튼 보여주기 -->
+                            <% if(currentPage != 1) {%>
+                                <button class="btn-no" onclick="location.href='<%=contextPath%>/review?currentPage=<%= currentPage-1 %>';">&lt;</button>
+                            <%} %>
+
+                                <!-- 페이징바 START -->
+                                <% for(int pNum = startPage; pNum <= endPage; pNum++) { %>
+                                    
+                                    <% if(pNum != currentPage){ %>
+                                            <button class="btn-no" onclick="location.href='<%=contextPath%>/review?currentPage=<%= pNum %>';"><%= pNum %></button>
+                                    <%} else { %>
+                                            <button class="btn-no" disabled><%= pNum %></button>
+                                        <% } %>
+                                <% } %>
+
+                            <!-- 현재 페이지가 마지막페이지가 아니라면 : ">"" 버튼 보여주기 -->    
+                            <% if(currentPage != maxPage) {%>
+                                <button class="btn-no" onclick="location.href='<%=contextPath%>/review?currentPage=<%= currentPage+1 %>';">&gt;</button>
+                            <% } %>
+                        </div>
+                        <!-- 페이징바 영역 END-->
+                            <br>
+                        </div>
+                        </td>
+                </tr>
+           </table>
+           
+  
+
+       </div>
+
+            
+        <!-- bottom : 푸터바 영역 ---------------------------------------------------->
+        <div class="w_ bottom">
+            
+            <!-- 푸터바 START-->
+            <%@ include file="../common/footer.jsp" %>
+            <!-- 푸터바 END-->
+         
+        </div>
+   </div>
+   
+   <script>
+       $(function(){
+           $(".Pthumbnail").click(function(){
+               var pno = $(this).children().eq(0).val();
+
+               location.href="<%=contextPath%>/store.pr?pno="+pno;
+           });
+       });
+   </script>
+</body>
+</html>

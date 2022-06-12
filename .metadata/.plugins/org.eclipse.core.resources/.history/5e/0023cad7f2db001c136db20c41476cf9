@@ -1,0 +1,98 @@
+package com.winefine.order.model.dao;
+
+import static com.winefine.common.JDBCTemplate.close;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import com.winefine.cart.model.dao.CartDao;
+import com.winefine.order.model.vo.Order;
+
+public class OrderDao {
+	
+	// 전역변수로 Properties 타입의 객체 하나 만들어두기
+			private Properties prop = new Properties();
+			
+	// 공통적인 코드를 기본생성자에 빼기
+	public OrderDao() {
+		
+		// 나중에 배포될 classes 폴더 기준으로 xml 파일의 경로 잡기
+		String fileName = CartDao.class.getResource("/sql/order/order-mapper.xml").getPath();
+		
+		try {
+			prop.loadFromXML(new FileInputStream(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int insertOrder(Connection conn, Order o) {
+		
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("insertOrder");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, o.getOrderUser());
+			pstmt.setString(2, o.getPickup());
+			pstmt.setInt(3, o.getTotalPrice());
+			pstmt.setInt(4, o.getLocationCode());
+			pstmt.setInt(5, o.getPaymentCode());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+
+	}
+	
+	public Order selectOrder(Connection conn, int userNo) {
+		
+		Order paidOrder = null;
+		
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectOrder");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, userNo);
+			
+			paidOrder = new Order(rset.getInt("ORDER_NO"),
+								  rset.getInt("ORDER_USER"),
+								  rset.getString("PICKUP"),
+								  rset.getString("ORDER_STATUS"),
+								  rset.getInt("TOTAL_PRICE"),
+								  rset.getDate("ORDER_DATE")
+								  rset.getString("LOCATION_NAME"),
+								  rset.getString("PAYMENT"));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+				
+
+	
+	
+	
+	
+
+}

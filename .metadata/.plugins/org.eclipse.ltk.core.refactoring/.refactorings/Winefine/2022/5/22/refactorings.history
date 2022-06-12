@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Winefine/src/com/winefine/store/controller/payToBuy.java&apos; to &apos;buyToPay.java&apos;" description="Rename resource &apos;payToBuy.java&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/com/winefine/store/controller/payToBuy.java" name="buyToPay.java" stamp="1653455944417" updateReferences="true"/>
+</session>

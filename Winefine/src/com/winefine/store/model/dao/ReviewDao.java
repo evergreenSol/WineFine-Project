@@ -1,0 +1,357 @@
+/* < Dao 단 > 
+ * 0) 어떤 쿼리문을 실행해서 어떤 값을 받는지 먼저 생각
+ * 1) 필요한 변수 셋팅
+ * 2) pstmt 객체생성(sql문보내주기) & try-catch
+ * 3) 쿼리문이 미완성인 경우 채워주기
+ * 4,5) 변수에값담기 = 쿼리문실행
+ * 6) ResultSet으로부터 값 뽑아내서 객체로 가공
+ * 7) 자원반납
+ * 8) 결과반환
+ */
+
+package com.winefine.store.model.dao;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
+
+import static com.winefine.common.JDBCTemplate.*;
+
+import com.winefine.common.model.vo.PageNation;
+import com.winefine.order.model.vo.Order;
+import com.winefine.store.model.vo.Review;
+
+public class ReviewDao {
+	
+	private Properties prop = new Properties();
+	
+	public ReviewDao() {
+		try {
+			prop.loadFromXML(new FileInputStream(ReviewDao.class.getResource("/sql/store/review-mapper.xml").getPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	// 1. listCount 를 조회하는 메소드
+	public int selectListCount(Connection conn) {
+		
+		int listCount = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql = prop.getProperty("selectListCount");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				listCount = rset.getInt("COUNT");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		
+		
+		return listCount;
+	}
+
+	// 2. ReviewList를 조회할 메소드
+	public ArrayList<Review> selectList(Connection conn, PageNation pn, int productNo) {
+		
+		// SELECT문 => ResultSet 객체 (한개의 행 조회 예정)
+		ArrayList<Review> reviewList = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectList");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			int startRow = (pn.getCurrentPage()-1) * pn.getBoardLimit() + 1;
+			int endRow = startRow + pn.getBoardLimit() - 1;
+			
+			pstmt.setInt(1, productNo);
+			pstmt.setInt(2, startRow);
+			pstmt.setInt(3, endRow);
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				reviewList.add(new Review(rset.getInt("REVIEW_NO"),
+											rset.getString("REVIEW_TITLE"),
+											rset.getDate("CREATE_DATE"),
+											rset.getString("USER_ID"),
+											rset.getInt("COUNT"),
+											rset.getString("REVIEW_PHOTO"),
+											rset.getString("REVIEW_CONTENT"),
+											rset.getString("ANSWER"),
+											rset.getDate("ANSWER_DATE")));
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			close(rset);
+			close(pstmt);
+		}
+		
+		
+		return reviewList;
+	}
+	
+	// 3. ReviewListAll(관리자용 : 모든정보가져오기)를 조회할 메소드
+	public ArrayList<Review> selectListAll(Connection conn, PageNation pn) {
+		
+		ArrayList<Review> reviewList = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectListAll");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			int startRow = (pn.getCurrentPage()-1) * pn.getBoardLimit() + 1;
+			int endRow = startRow + pn.getBoardLimit() - 1;
+			
+			pstmt.setInt(1, startRow);
+			pstmt.setInt(2, endRow);
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				reviewList.add(new Review(rset.getInt("REVIEW_NO"),
+											rset.getString("PRODUCT_NAME"),
+											rset.getInt("ORDER_NO"),
+											rset.getString("USER_ID"),
+											rset.getString("REVIEW_TITLE"),
+											rset.getString("REVIEW_CONTENT"),
+											rset.getDate("CREATE_DATE"),
+											rset.getInt("COUNT"),
+											rset.getString("STATUS"),
+											rset.getString("REVIEW_PHOTO"),
+											rset.getString("ANSWER"),
+											rset.getDate("ANSWER_DATE"),
+											rset.getString("ANSWER_YN")));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			close(rset);
+			close(pstmt);
+		}
+		
+		
+		return reviewList;
+		
+	}
+	
+	// 4. ReviewUpdateStatus(관리자용 : 공개여부, 답변상태)를 수정할 메소드
+	public int updateStatus(Connection conn, String status, String answer, int rNo) {
+		
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("updateStatus");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, status);
+			pstmt.setString(2, answer);
+			pstmt.setInt(3, rNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	// selectOrderForReview 메소드
+	public Order selectOrderForReview(Connection conn, String reviewWriter, String productNo) {
+		Order o = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql = prop.getProperty("selectOrderForReview");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, Integer.parseInt(productNo));
+			pstmt.setInt(2, Integer.parseInt(reviewWriter));
+			
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				o = new Order();
+				
+				//USER_ID         ORDER_PRODUCT_NO
+				o.setOrderNo(rset.getInt("ORDER_NO"));
+				o.setOrderUser(rset.getString("USER_ID"));
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+//		System.out.println(o);
+		return o;
+	}
+	
+	// review 추가 메소드 
+	public int insertReview(Connection conn, Review r, Order o) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		try {
+			if(r.getReviewPhoto() != "" ) {
+				pstmt = conn.prepareStatement(prop.getProperty("insertReviewPhoto"));
+				
+				
+				pstmt.setString(1, r.getProductNo());
+				pstmt.setString(2, r.getReviewWriter());
+				pstmt.setInt(3, o.getOrderNo()); 
+				pstmt.setString(4, r.getReviewTitle());
+				pstmt.setString(5, r.getReviewContent());
+				pstmt.setString(6, r.getReviewPhoto());
+				
+				result = pstmt.executeUpdate();
+			}
+			
+			else {
+				pstmt = conn.prepareStatement(prop.getProperty("insertReviewPhotoX"));
+				
+				pstmt.setString(1, r.getProductNo());
+				pstmt.setString(2, r.getReviewWriter());
+				pstmt.setInt(3, o.getOrderNo());
+				pstmt.setString(4, r.getReviewTitle());
+				pstmt.setString(5, r.getReviewContent());
+				
+				result = pstmt.executeUpdate();
+			}
+			
+			
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				close(pstmt);
+			}
+			
+		return result;
+		}
+
+	// 기간별 reviewList 조회 메소드 
+	public ArrayList<Review> reviewListDate(Connection conn, String startDate, String endDate, PageNation pn) {
+		
+		ArrayList<Review> reviewListDate = new ArrayList<>();
+		
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("reviewListDate");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			int startRow = (pn.getCurrentPage()-1) * pn.getBoardLimit() + 1;
+			int endRow = startRow + pn.getBoardLimit() - 1;
+			
+			pstmt.setString(1, startDate);
+			pstmt.setString(2, endDate);
+			pstmt.setInt(3, startRow);
+			pstmt.setInt(4, endRow);
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				reviewListDate.add(new Review(rset.getInt("REVIEW_NO"),
+											rset.getString("PRODUCT_NAME"),
+											rset.getInt("ORDER_NO"),
+											rset.getString("USER_ID"),
+											rset.getString("REVIEW_TITLE"),
+											rset.getString("REVIEW_CONTENT"),
+											rset.getDate("CREATE_DATE"),
+											rset.getInt("COUNT"),
+											rset.getString("STATUS"),
+											rset.getString("REVIEW_PHOTO"),
+											rset.getString("ANSWER"),
+											rset.getDate("ANSWER_DATE"),
+											rset.getString("ANSWER_YN")));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return reviewListDate;
+	}
+	
+	public ArrayList<Review> selectReviewList (Connection conn, int userNo) {
+		
+		ArrayList<Review> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectReviewList");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			
+			pstmt.setInt(1, userNo);
+
+			
+			rset = pstmt.executeQuery();
+			
+			while(rset.next()) {
+				list.add(new Review(rset.getInt("REVIEW_NO"),
+									rset.getString("PRODUCT_NAME"),
+									rset.getString("REVIEW_TITLE"),
+									rset.getDate("CREATE_DATE"),
+									rset.getString("USER_ID"),
+									rset.getInt("COUNT"),
+									rset.getString("REVIEW_PHOTO"),
+									rset.getString("REVIEW_CONTENT"),
+									rset.getString("ANSWER"),
+									rset.getDate("ANSWER_DATE")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			close(rset);
+			close(pstmt);
+		}
+		
+		
+		return list;
+		
+	}
+	
+
+	
+}

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- 페이징 -->
+   <entry key="selectListCount">
+		SELECT COUNT(*) COUNT 
+		FROM BOARD  
+		WHERE STATUS = 'Y'
+		
+	</entry>
+	
+	<entry key="selectList">
+	SELECT *
+    FROM (SELECT ROWNUM RNUM, A.*
+      FROM (SELECT ROWNUM, BOARD_NO, USER_ID, BOARD_TITLE, CREATE_DATE, BOARD_TYPE
+            FROM BOARD B
+            JOIN MEMBER ON (BOARD_WRITER = USER_NO)
+            WHERE B.STATUS = 'Y'
+            ORDER BY CREATE_DATE DESC) A)
+    WHERE RNUM BETWEEN ? AND ?
+   </entry>
+
+	<entry key="selectThumbnailList">
+		SELECT BOARD_NO, BOARD_TITLE, FILE_PATH || CHANGE_NAME "TITLEIMG"
+		  FROM BOARD B
+		  JOIN ATTACHMENT ON (BOARD_NO = REF_BNO)
+		 WHERE BOARD_TYPE = ?
+		   AND B.STATUS = 'Y'
+		   AND FILE_LEVEL = 1
+		 ORDER BY CREATE_DATE DESC
+	</entry>
+	
+	<!-- 관리자 게시판 글작성 카테고리  첫번째 -->
+	<entry key="insertThumbnailBoard">
+	INSERT INTO BOARD(BOARD_NO
+					, BOARD_TYPE
+					, BOARD_TITLE
+					, BOARD_CONTENT
+					, BOARD_WRITER)
+	VALUES(SEQ_BNO.NEXTVAL
+			, ?
+			, ?
+			, ?
+			, ?)
+	</entry>
+	
+	<entry key="insertBrattachmentList">
+			INSERT INTO BRATTACHMENT(BRFILE_NO
+									 , BRREF_NO
+									 , BRORIGIN_NAME
+									 , BRCHANGE_NAME
+									 , BRFILE_PATH
+									 , BRFILE_LEVEL)
+			VALUES(SEQ_BRNO.NEXTVAL
+				 , SEQ_BNO.CURRVAL
+				 , ?
+				 , ?
+				 , ?
+				 , ?)
+		</entry>
+		
+		<!-- 와인용어  -->
+		<entry key="selectThumbnailList">
+		SELECT BOARD_NO, BOARD_TITLE, BRFILE_PATH || BRCHANGE_NAME "TITLEIMG"
+			FROM BOARD B
+			JOIN BRATTACHMENT ON (BOARD_NO = BRREF_NO)
+			WHERE B.STATUS = 'Y'
+			  AND BRFILE_LEVEL = 1 
+			  AND BOARD_TYPE=?
+		ORDER BY CREATE_DATE DESC 
+		</entry>
+		
+		<!--  페어링 -->
+		<entry key="selectThumbnailPairingList">
+		SELECT BOARD_NO, BOARD_TITLE, BRFILE_PATH || BRCHANGE_NAME "TITLEIMG"
+			FROM BOARD B
+			JOIN BRATTACHMENT ON (BOARD_NO = BRREF_NO)
+			WHERE B.STATUS = 'Y'
+			  AND BRFILE_LEVEL = 1
+			  AND BOARD_TYPE = ? 
+		ORDER BY CREATE_DATE DESC 
+		</entry>
+		
+		<!--  메거진 -->
+		<entry key="selectThumbnailMagazineList">
+		SELECT BOARD_NO, BOARD_TITLE, BRFILE_PATH || BRCHANGE_NAME "TITLEIMG"
+			FROM BOARD B
+			JOIN BRATTACHMENT ON (BOARD_NO = BRREF_NO)
+			WHERE B.STATUS = 'Y'
+			  AND BRFILE_LEVEL = 1
+			  AND BOARD_TYPE = ? 
+		ORDER BY CREATE_DATE DESC 
+		</entry>
+		
+		<!-- 용어 상세페이지  ?? -->
+		<entry key="selectBoard">
+		SELECT BOARD_NO, USER_ID, BOARD_TITLE, BOARD_CONTENT, BOARD_FILE, CREATE_DATE, B.STATUS, BOARD_TYPE
+		FROM BOARD B
+		JOIN MEMBER ON (BOARD_WRITER = USER_NO)
+		WHERE BOARD_NO = ?
+		AND B.STATUS = 'Y'
+       </entry>
+		
+		<entry key="selectBrattachment">
+			SELECT BRFILE_NO, BRORIGIN_NAME, BRCHANGE_NAME, BRFILE_PATH
+			FROM BRATTACHMENT
+			WHERE BRREF_NO = ?
+		</entry>
+		
+		<!-- 페어링 상세페이지 -->
+		<entry key="selectpBoard">
+		SELECT BOARD_NO, BOARD_TITLE,BOARD_CONTENT
+		  FROM BOARD 
+		 WHERE BOARD_NO = ?
+		  AND STATUS = 'Y'
+       </entry>
+		
+		<entry key="selectpBrattachment">
+			SELECT BRFILE_NO, BRORIGIN_NAME, BRCHANGE_NAME, BRFILE_PATH
+			FROM BRATTACHMENT
+			WHERE BRREF_NO = ?
+		</entry>
+		
+				<!-- 매거진 상세페이지 -->
+		<entry key="selectmBoard">
+		SELECT BOARD_NO, BOARD_TITLE,BOARD_CONTENT
+		  FROM BOARD 
+		 WHERE BOARD_NO = ?
+		  AND STATUS = 'Y'
+       </entry>
+		
+		<entry key="selectmBrattachment">
+			SELECT BRFILE_NO, BRORIGIN_NAME, BRCHANGE_NAME, BRFILE_PATH
+			FROM BRATTACHMENT
+			WHERE BRREF_NO = ?
+		</entry>
+		
+		<!-- 게시판 상세조회 
+		<entry key="increaseCount">
+			UPDATE BOARD
+			  FROM BOARD_NO =?
+			AND STATUS = 'Y'
+		</entry>
+		 -->
+		 
+		<entry key="selectdBoard">
+		SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, USER_ID, CREATE_DATE
+		FROM BOARD B
+		JOIN MEMBER ON (BOARD_WRITER = USER_NO)
+		WHERE BOARD_NO = ?
+		AND B.STATUS = 'Y'
+		  </entry>
+		
+		<entry key="selectdBrattachment">
+			SELECT BRFILE_NO, BRORIGIN_NAME, BRCHANGE_NAME, BRFILE_PATH
+			FROM BRATTACHMENT
+			WHERE BRREF_NO = ?
+		</entry>
+	
+	    <!-- 게시글 수정 -->
+	    <entry key="updateBoard">
+			UPDATE BOARD
+               SET BOARD_TITLE =?
+                 , BOARD_CONTENT = ?
+             WHERE BOARD_NO = ?
+		</entry>
+		
+		<entry key="updateAttachment">
+			UPDATE BRATTACHMENT
+			    SET BRORIGIN_NAME = ?
+			      , BRCHANGE_NAME = ?
+			      , BRFILE_PATH = ?
+			      , BRUPLOAD_DATE = SYSDATE
+			WHERE BRFILE_NO = ?
+		</entry>
+		
+		<entry key="insertNewAttachment">
+			INSERT INTO BRATTACHMENT(BRFILE_NO,
+                         BRREF_NO,
+                         BRORIGIN_NAME,
+                         BRCHANGE_NAME,
+                         BRFILE_PATH)
+			VALUES(SEQ_BRNO.NEXTVAL
+			        , ?
+			        , ?
+			        , ?
+			        , ?)
+		</entry>
+		
+		<!-- 사용자 게시글 작성 -->
+	
+	<entry key="deleteBoard">
+		UPDATE BOARD
+		   SET STATUS = 'N'
+		 WHERE BOARD_NO = ?
+	</entry>
+	
+	
+		
+</properties>
+
+
+
+
+
+
+
+
+
+
+

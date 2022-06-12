@@ -1,0 +1,99 @@
+package com.winefine.member.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.winefine.cart.model.service.CartService;
+import com.winefine.cart.model.vo.Cart;
+import com.winefine.member.model.vo.Member;
+import com.winefine.order.model.service.OrderService;
+import com.winefine.order.model.vo.Order;
+
+
+/**
+ * Servlet implementation class MyPageInsertOrderList
+ */
+@WebServlet("/insertOrder.me")
+public class MyPageInsertOrderList extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public MyPageInsertOrderList() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		int userNo = ((Member)request.getSession().getAttribute("loginUser")).getUserNo();
+		
+		//int totalPrice = Integer.parseInt(request.getParameter("totalPrice")); // 총결제금액
+		
+		String pickup = request.getParameter("pickup");
+		int totalPrice = request.getParameter("totalPrice");
+		String pickupDate = request.getParameter("pickupDate"); // 픽업 예정일
+		String locationCode = request.getParameter("locationCode");
+		String paymentCode = request.getParameter("paymentCode");
+		
+		System.out.println(userNo);
+		System.out.println(pickup);
+		System.out.println(totalPrice);
+		System.out.println(pickupDate);
+		System.out.println(locationCode);
+		System.out.println(paymentCode);
+		
+		ArrayList<Cart> list = new CartService().selectCartList(userNo);
+
+		if(!list.isEmpty()) {
+			for(Cart c : list) {
+				totalPrice += c.getBottle() * c.getPrice();
+				
+			}
+		}
+		
+		Order o = new Order();
+		o.setOrderUser(userNo);
+		o.setPickup(pickup);
+		o.setTotalPrice(totalPrice);
+		o.setLocationCode(locationCode);
+		o.setPaymentCode(paymentCode);
+		
+		
+		Order paidOrder = null;
+		int result = new OrderService().insertOrder(o);
+		
+		if(result > 0) { // 주문 테이블에 주문이 들어갔다.
+			// 주문상세 테이블 만들기 그러기 위해서 주문 테이블 먼저 가져와야한다.
+			
+			paidOrder = new OrderService().selectOrder(userNo);
+			
+			// 주문상세 테이블을 만들 수 있다.
+			System.out.println(paidOrder);
+			
+		}
+		else { // 주문이 안만들어짐
+			
+		}
+	
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

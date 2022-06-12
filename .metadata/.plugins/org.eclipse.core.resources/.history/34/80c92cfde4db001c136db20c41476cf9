@@ -1,0 +1,52 @@
+package com.winefine.member.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.winefine.cart.model.service.CartService;
+import com.winefine.cart.model.vo.Cart;
+import com.winefine.member.model.vo.Member;
+
+/**
+ * Servlet implementation class MyPageInsertOrderList
+ */
+@WebServlet("/insertOrder.me")
+public class MyPageInsertOrderList extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public MyPageInsertOrderList() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		int userNo = ((Member)request.getSession().getAttribute("loginUser")).getUserNo();
+		
+		ArrayList<Cart> list = new CartService().selectCartList(userNo);
+		
+		request.getParameter("");
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

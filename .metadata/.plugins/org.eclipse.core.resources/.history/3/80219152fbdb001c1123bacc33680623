@@ -1,0 +1,178 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	String orderUser = (String)request.getAttribute("orderUser"); // 수령인
+	String locationName = (String)request.getAttribute("locationName"); // 수령장소
+	String orderDate = (String)request.getAttribute("orderDate"); // 수령일자 [[[Date -> String??]]]
+	String payment = (String)request.getAttribute("payment"); // 결제방법
+	//int totalPrice = Integer.parseInt(request.getParameter("totalPrice")); // 총결제금액
+	
+	//System.out.println("OrderList.jsp : " + orderUser);
+	//System.out.println("OrderList.jsp : " + locationName);
+	//System.out.println("OrderList.jsp : " + orderDate);
+	//System.out.println("OrderList.jsp : " + payment);
+	//System.out.println("OrderList.jsp : " + totalPrice);
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+	div{
+		box-sizing: border-box;
+	}
+	.wrap{
+		width: 1200px;
+		height: 1500px;
+		margin: auto;
+	}
+	.w_{
+		/* border: 1px solid red; */
+		width: 100%;
+	}
+	
+	.top{
+      	height: 10%;
+    }
+    .body{
+        height: 70%;
+    }
+    .bottom{
+        height: 20%;
+    }
+    
+    /* - 구조 : body 영역_ 좌측 & 우측 분할 */
+    .myPage-body{
+        width: 100%;
+        height: 97%;
+    }
+    .myPage-body td.body_l{
+        width: 20%;
+        vertical-align: top;
+    }
+    .myPage-body td.body_r{
+        width: 80%;
+    }
+    
+    /* 상세 항목 */
+
+    .delete{
+        padding-left: 5%;
+        width: 90%;
+        height: 98%;
+    }
+    
+    table img {
+        width: 100px;
+        height: 100px;
+    }
+
+
+</style>
+</head>
+<body>
+	<div class="wrap">
+
+		<!-- top : hearder 삽입 영역 ------------------------------->
+		<div class="w_ top">
+			<!-- 헤더 START-->
+			<%@ include file="../common/header.jsp" %>
+			<!-- 헤더 END-->
+		</div>
+		
+		<!-- body : 카테고리 페이지 바디 영역 --------------------------------------------->
+       <div class="w_ body">
+       
+        <br>   
+           <!-- body left(카테고리) & right(내용)-->
+           <table class="myPage-body">
+               <td class="body_l">
+                <%@ include file="../common/category-myPage.jsp" %>
+               </td>
+               <td class="body_r">
+                   <div class="delete">
+                        <!-- <h2>상품 주문내역</h2> -->
+						<b style="font-size:24px;">상품주문내역</b>
+			    		<hr style="border: 1px solid black">
+			
+						<table>
+							<tr>
+								<td colspan="4">상품명 외1건</td>    
+							</tr>
+							<tr>
+								<td rowspan="3" width="100" height="100"><img src="https://www.winenara.com/uploads/product/550/81b4138d23cd8bc759ba7a69cebc13a6.png"></td>
+								<th width="80">주문번호</th>
+								<td width="10"></td>
+								<td width="80">1</td>
+							</tr>
+							<tr>
+								<th>결제금액</th>
+								<td></td>
+								<td>85,000원</td>
+								<td width="650" align="right"><button type="button" id="moreBtn">더보기</button></td>
+							</tr>
+							<tr>
+								<th>주문상세</th>
+								<td></td>
+								<td>픽업완료</td>
+							</tr>
+						</table>
+				
+						<hr>
+				
+						<!-- 한건 -->
+						<table>
+							<tr>
+								<td colspan="4">상품명 외1건</td>
+								
+							</tr>
+							<tr>
+								<td rowspan="3" width="100" height="100"><img src="https://www.winenara.com/uploads/product/550/85e40fbbd7591f5a04c73e28960c85a4.png"></td>
+								<th width="80">주문번호</th>
+								<td width="10"></td>
+								<td width="80">2</td>
+							</tr>
+							<tr>
+								<th>결제금액</th>
+								<td></td>
+								<td>65,000원</td>
+								<td width="650" align="right"><button type="button">더보기</button></td>
+							</tr>
+							<tr>
+								<th>주문상세</th>
+								<td></td>
+								<td>픽업완료</td>
+							</tr>
+						</table>
+			
+			        <hr>
+                   </div>
+                </td>
+           </table>
+       </div>
+       
+       <script>
+       $(function () {
+    	   $("#moreBtn").click(function () {
+    		   console.log("??");
+    		   location.href="/winefine/orderDetail.me";
+    	   });
+       });
+       </script>
+
+   
+       
+        <!-- bottom : 푸터바 영역 ---------------------------------------------------->
+        <div class="w_ bottom">
+            
+            <!-- 푸터바 START-->
+            <%@ include file="../common/footer.jsp" %>
+            <!-- 푸터바 END-->
+         
+        </div>
+		
+	</div>
+</body>
+</html>

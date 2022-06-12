@@ -1,0 +1,206 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.winefine.order.model.vo.Order, com.winefine.order.model.vo.OrderProduct" %>
+<%
+
+	Order o = (Order)request.getAttribute("o");
+	ArrayList<OrderProduct> opList = (ArrayList<OrderProduct>)request.getAttribute("opList");
+
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+	div{
+		box-sizing: border-box;
+	}
+	.wrap{
+		width: 1200px;
+		height: 1800px;
+		margin: auto;
+	}
+	
+	.w_{
+		/* border: 1px solid red; */
+		width: 100%;
+	}
+	
+	.top{
+      	height: 10%;
+    }
+    .body{
+        height: 70%;
+    }
+    .bottom{
+        height: 20%;
+    }
+    
+    /* - 구조 : body 영역_ 좌측 & 우측 분할 */
+    .myPage-body{
+        width: 100%;
+        height: 97%;
+    }
+    .myPage-body td.body_l{
+        width: 20%;
+        vertical-align: top;
+    }
+    .myPage-body td.body_r{
+        width: 80%;
+    }
+    
+    /* 상세 항목 */
+
+    .delete{
+        padding-left: 5%;
+        width: 90%;
+        height: 98%;
+    }
+    
+    table img {
+        width: 100px;
+        height: 100px;
+    }
+
+
+</style>
+</head>
+<body>
+	<div class="wrap">
+
+		<!-- top : hearder 삽입 영역 ------------------------------->
+		<div class="w_ top">
+			<!-- 헤더 START-->
+			<%@ include file="../common/header.jsp" %>
+			<!-- 헤더 END-->
+		</div>
+		
+		<!-- body : 카테고리 페이지 바디 영역 --------------------------------------------->
+       <div class="w_ body">
+       
+        <br>   
+           <!-- body left(카테고리) & right(내용)-->
+           <table class="myPage-body">
+               <td class="body_l">
+                <%@ include file="../common/category-myPage.jsp" %>
+               </td>
+               <td class="body_r">
+                   <div class="delete">
+                        <!-- <h2>상품 주문내역</h2> -->
+						<b style="font-size:24px;">상품주문내역</b>
+			    		<hr style="border: 1px solid black">
+			
+						<span class="detailNo">주문번호</span>&nbsp;&nbsp;&nbsp;<span id="orderNo" class="detailNo"><%= o.getOrderNo() %></span>      
+						<hr color="black">
+					
+						<% for(OrderProduct op : opList) { %>
+						<table class="order-detail">
+							<tr height="100">
+								<td rowspan="2" width="150"><img src="<%= op.getThumbnail() %>" alt="와인thumbnail" width="100%"></td>
+								<td width="400" colspan="3"><%= op.getProductNo() %></td>
+								<td width="200"></td>
+								<td rowspan="2" width="100" id="status"><%= o.getOrderStatus() %></td>
+							</tr>
+							<tr height="100">
+								<td colspan="2"><%= op.getpPrice() %>원</td>
+								<td><%= op.getpCount() %>병</td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table>
+						<% } %>
+				
+						<!-- <table class="order-detail">
+							<tr height="100">
+								<td rowspan="2" width="150"><img src="https://www.winenara.com/uploads/product/550/85e40fbbd7591f5a04c73e28960c85a4.png" alt="와인이름" width="100%"></td>
+								<td width="400" colspan="3">동적_디오라 샤르도네</td>
+								<td width="200"></td>
+								<td rowspan="2" width="100" id="status">동적_픽업완료</td>
+							</tr>
+							<tr height="100">
+								<td colspan="2">동적_39,000원</td>
+								<td>동적_2병</td>
+								<td></td>
+								<td></td>
+							</tr>
+						</table> -->
+						<hr color="lightgray" size="0.5px">
+				
+						<br><br>
+				
+						<span class="detailNo">결제정보</span>      
+						<hr color="black">
+						<table class="order-detail">
+								<tr>
+									<td width="100">상 품 금 액</td>
+									<td width="700"></td>
+									<td width="100"><%= op.getpPrice() * op.getpCount() %></td>
+								</tr>
+								<tr height="20"></tr>
+								<tr>
+									<td>결 제 정 보</td>
+									<td></td>
+									<td><%= o.getPaymentCode() %></td>
+								</tr>
+						</table>
+				
+						<hr color="lightgray" size="0.5px">
+				
+						<br><br>
+				
+						<span class="detailNo">주문정보</span> 
+				
+						<hr color="black">
+				
+						<table class="order-detail">
+							<tr>
+								<td width="100">주 문 번 호</td>
+								<td width="700"></td>
+								<td width="100">동적_1</td>
+							</tr>
+							<tr height="20"></tr>
+							<tr>
+								<td>주 문 자 명</td>
+								<td></td>
+								<td>동적_김한솔</td>
+							</tr>
+							<tr height="20"></tr>
+							<tr>
+								<td>수 령 자 명</td>
+								<td></td>
+								<td>동적_김한솔</td>
+							</tr>
+							<tr height="20"></tr>
+							<tr>
+								<td>주 문 일 시</td>
+								<td></td>
+								<td>동적_</td>
+							</tr>
+						</table>
+				
+						<hr color="lightgray" size="0.5px">
+					</div>						
+						
+
+                   </div>
+                </td>
+           </table>
+       </div>
+
+   
+       
+        <!-- bottom : 푸터바 영역 ---------------------------------------------------->
+        <div class="w_ bottom">
+            
+            <!-- 푸터바 START-->
+            <%@ include file="../common/footer.jsp" %>
+            <!-- 푸터바 END-->
+         
+        </div>
+		
+	</div>
+</body>
+</html>

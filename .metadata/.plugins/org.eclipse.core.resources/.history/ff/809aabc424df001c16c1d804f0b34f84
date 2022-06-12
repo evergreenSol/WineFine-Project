@@ -1,0 +1,116 @@
+package com.winefine.store.controller;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+
+import com.oreilly.servlet.MultipartRequest;
+import com.winefine.common.MyFileRenamePolicy;
+import com.winefine.order.model.vo.Order;
+import com.winefine.store.model.service.ProductService;
+import com.winefine.store.model.service.QnaService;
+import com.winefine.store.model.service.ReviewService;
+import com.winefine.store.model.vo.Product;
+import com.winefine.store.model.vo.Qna;
+import com.winefine.store.model.vo.Review;
+
+/**
+ * Servlet implementation class ReviewInsertController
+ */
+@WebServlet("/insert.re")
+public class ReviewInsertController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ReviewInsertController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		request.setCharacterEncoding("UTF-8");
+		
+		if(ServletFileUpload.isMultipartContent(request)) {
+			
+			int maxSize = 10 * 1024 * 1024;
+			
+			String savePath = request.getSession().getServletContext().getRealPath("/resources/product_upfiles/");
+			
+			
+			MultipartRequest multiRequest = new MultipartRequest(request, savePath, maxSize, "UTF-8", new MyFileRenamePolicy());
+			
+			String reviewWriter = multiRequest.getParameter("userNo");
+			String productNo = multiRequest.getParameter("pno");
+			// 요청시 전달값 : userNo, title, content, upfile 뽑아서 VO객체로 가공(Qna, Attachment)
+			
+			String reviewTitle = multiRequest.getParameter("reviewTitle");
+			String reviewContent = multiRequest.getParameter("reviewContent");
+			String reviewPhoto = multiRequest.getFilesystemName("reviewPhoto");
+	
+			Review r = new Review();
+			if(reviewPhoto!=null) {
+				
+				reviewPhoto = request.getContextPath() + "/resources/product_upfiles/" + multiRequest.getFilesystemName("reviewPhoto");
+				
+				r.setProductNo(productNo);
+				r.setReviewWriter(reviewWriter);
+				r.setReviewTitle(reviewTitle);
+				r.setReviewContent(reviewContent);
+				r.setReviewPhoto(reviewPhoto);
+			}
+			else {
+				
+				r.setProductNo(productNo);
+				r.setReviewWriter(reviewWriter);
+				r.setReviewTitle(reviewTitle);
+				r.setReviewContent(reviewContent);
+			}
+			
+			Order o = new ReviewService().selectOrderForReview(reviewWriter, productNo);
+			int result = 0;
+			if(o != null ) {
+				
+				// 변수에 값담기 = Service로 요청 후 결과 받기
+				result = new ReviewService().insertReview(r,o);
+				if(result > 0) { // 성공
+					request.setAttribute("o", o);
+					request.getSession().setAttribute("alertMsg", "게시글 작성 완료");
+					//request.getRequestDispatcher("views/store/qnaListView.jsp").forward(request, response);
+					response.sendRedirect(request.getContextPath() + "/review?pno=" + productNo + "&currentPage=1" );
+				}
+			}
+			else { // 실패 => 에러페이지 포워딩
+				
+				
+				request.setAttribute("errorMsg", "게시글 작성 실패");
+				request.getRequestDispatcher("views/common/errorPage.jsp").forward(request, response);
+			}
+
+			
+			
+			// 결과에 따른 응답화면 지정 
+			
+			
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		doGet(request, response);
+	}
+
+}

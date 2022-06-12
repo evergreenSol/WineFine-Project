@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- 주문테이블 생성 -->
+	<entry key="insertOrder">
+		INSERT INTO W_ORDER(ORDER_NO, ORDER_USER, PICKUP, 
+							TOTAL_PRICE, LOCATION_CODE, PAYMENT_CODE)
+		VALUES (SEQ_CNO.NEXTVAL, ?, ?, ?, ?, ?)
+	</entry>
+	
+	<!-- 장바구니 리스트 조회 -->
+	<entry key="selectOrder">
+		SELECT ORDER_NO, ORDER_USER, PICKUP, ORDER_STATUS, TOTAL_PRICE,
+		       ORDER_DATE, LOCATION_NAME, PAYMENT_CODE
+		  FROM W_ORDER
+		 WHERE ORDER_USER = ?	
+	</entry>
+	
+	<!-- 장바구니 삭제 -->
+	<entry key="deleteCart">
+		DELETE FROM CART
+		WHERE CART_NO = ?
+	</entry>
+</properties>
+
+
+
+
+
+
+
+
+
+
+

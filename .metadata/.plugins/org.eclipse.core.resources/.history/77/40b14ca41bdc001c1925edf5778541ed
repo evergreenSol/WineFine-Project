@@ -1,0 +1,149 @@
+package com.winefine.cart.model.dao;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
+
+import com.winefine.cart.model.vo.Cart;
+import com.winefine.common.JDBCTemplate;
+
+public class CartDao {
+
+	// 전역변수로 Properties 타입의 객체 하나 만들어두기
+		private Properties prop = new Properties();
+		
+		// 공통적인 코드를 기본생성자에 빼기
+		public CartDao() {
+			
+			// 나중에 배포될 classes 폴더 기준으로 xml 파일의 경로 잡기
+			String fileName = CartDao.class.getResource("/sql/cart/cart-mapper.xml").getPath();
+			
+			try {
+				prop.loadFromXML(new FileInputStream(fileName));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	
+
+	public int insertCart(Connection conn, Cart c) {
+
+		// INSERT 문 => int (처리된 행의 갯수)
+		
+		// 1) 필요한 변수 셋팅
+		int result = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("insertCart");
+		
+		try {
+			
+			// 2) PreparedStatement 객체 생성
+			pstmt = conn.prepareStatement(sql);
+			
+			// 3) 미완성된 쿼리문 완성시키기
+			pstmt.setInt(1, Integer.parseInt(c.getProductNo()));
+			pstmt.setInt(2, c.getUserNo());
+			pstmt.setInt(3, c.getPrice());
+			pstmt.setInt(4, c.getBottle());
+			
+			
+			// 4, 5) 쿼리문 실행 후 결과 받기
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			// 6) 자원 반납 (생성된 순서의 역순)
+			JDBCTemplate.close(pstmt);
+		}
+		System.out.println("Dao: " + result);
+		// 7) 결과 반환
+		return result;
+	}
+
+
+	public ArrayList<Cart> selectCartList(Connection conn, int userNo) {
+
+		// SELECT 문 => ResultSet 객체 (여러행 조회) => ArrayList
+		
+		// 1) 필요한 변수들 셋팅
+		ArrayList<Cart> list = new ArrayList<>();
+		
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String sql = prop.getProperty("selectCartList");
+		
+		try {
+			
+			// 2) PreparedStatement 객체 생성
+			pstmt = conn.prepareStatement(sql);
+			
+			// 3) 미완성된 SQL 문 완성시키기
+			// 로그인 구현되면 userNo 동적으로 받아오기
+			pstmt.setInt(1, userNo);
+			
+			// 4, 5) 쿼리문 실행 후 결과받기
+			rset = pstmt.executeQuery();
+			
+			
+			
+			// 6) VO 객체 또는 ArrayList 로 가공하기
+			while(rset.next()) {
+				
+				list.add(new Cart(rset.getInt("CART_NO")
+								  , rset.getString("PRODUCT_NAME")
+								  , rset.getInt("USER_NO")
+								  , rset.getInt("PRICE")
+								  , rset.getInt("BOTTLE")
+								  , rset.getString("THUMBNAIL")));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			// 7) 자원반납 (생성된 순서의 역순)
+			JDBCTemplate.close(rset);
+			JDBCTemplate.close(pstmt);
+		}
+		
+		// 8) 결과 반환
+		return list;
+	}
+
+
+	public int deleteCart(Connection conn, int cartNo) {
+		int result = 0;
+		
+		PreparedStatement pstmt = null;
+		
+		String sql = prop.getProperty("deleteCart");
+		
+		try {
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, cartNo);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			JDBCTemplate.close(pstmt);
+		}
+		
+		return result;
+	}
+
+}

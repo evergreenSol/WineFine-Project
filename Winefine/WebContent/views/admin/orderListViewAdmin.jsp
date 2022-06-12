@@ -1,0 +1,342 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.winefine.order.model.vo.Order, com.winefine.common.model.vo.PageInfo" %>
+    
+<% 
+
+    ArrayList<Order> oList = (ArrayList<Order>)request.getAttribute("oList");
+    PageInfo pi = (PageInfo)request.getAttribute("pi");
+
+    // 페이징바 관련 변수
+	int currentPage = pi.getCurrentPage();
+	int startPage = pi.getStartPage();
+	int endPage = pi.getEndPage();
+	int maxPage = pi.getMaxPage();
+    
+%>   
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> WINEFINE :D </title>
+    <style>
+        /* 전체 구조 잡기*/
+        div{
+            /* border: 1px solid red;  */
+            /*가이드라인 용이니 다 쓰시고 지우면 됩니다 */
+            box-sizing: border-box;
+        }
+        .wrap{
+            width: 1200px; 
+            height: 800px; 
+            margin: auto;
+        }
+        .w_{
+            width: 100%;
+        }
+        .top {
+            height: 240px; /* height: 240px */
+        }
+        .body {
+            height: 600px;
+        }
+        .bottom{
+            height: 100px;  /* height: 100px */
+        }
+        
+        /* 상세 항목 */
+        td{
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+        .bottom{
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .btn{
+        	margin:5px 10px;
+        }
+
+        #orderList {
+            margin: auto;
+            text-align: center;
+        }
+
+        thead>tr th {
+            padding: 5px;
+        }
+
+        #orderList>tbody>tr td {
+            /* width: 60px; */
+            padding: 5px;
+        }
+        
+        /* #orderList>tbody>tr:hover {
+            cursor: pointer;
+            background-color: lightgray;
+            color: rgb(119, 45, 96);
+        } */
+
+        .showDetail:hover {
+            cursor: pointer;
+            background-color: lightgray;
+            color: rgb(119, 45, 96);
+        }
+        .updateStatus:hover {
+            cursor: pointer;
+            background-color: lightgray;
+            color: rgb(119, 45, 96);
+        }
+        
+
+
+
+        /* Modal */
+
+        .modal-content {
+
+            height:auto;
+        }
+
+
+        .modal-body {
+            margin: auto;
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+       <!-- top : hearder 삽입 영역 ------------------------------->
+        <div class="w_ top">
+            <div class="w_" style="height: 150px;">
+                <!-- 헤더 START-->
+                <%@ include file="../common/adminHeader.jsp" %>
+                <!-- 헤더 END-->
+            </div>
+            
+            <div class="w_" style="height: 90px;">
+           		<br>
+                <table>
+                    <tr id="top_btn">
+                        <td style="width:480px; font-size: 22px; font-weight: 600; text-align : left;">전체 주문 조회</td>
+                        <td colspan="2" style="width: 720px; text-align: right;">
+                            <!-- <button type="button" id="insertProduct">주문수정</button> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><hr></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- body : 바디 영역 --------------------------------------->
+        <div class="w_ body">
+
+            <br>
+
+
+
+            <table id="orderList" align="center" border="1">
+                <thead>
+                    <tr>
+                        <th>주문번호</th>
+                        <th>주문자</th>
+                        <th>수령인</th>
+                        <th>수령(예정)일</th>
+                        <th>수령지</th>
+                        <th>주문상태</th>
+                        <th>결제금액</th>
+                        <th>주문일</th>
+                        <th>결제방식</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                <% for( Order o : oList) { %>
+                    <tr>
+                    	<td><%= o.getOrderNo() %></td>
+                        <td><%= o.getOrderUser() %></td>
+                        <td><%= o.getPickup() %></td>
+                        <td><%= o.getPickupDate() %></td>
+                        <td><%= o.getLocationCode() %></td>
+                        <td><%= o.getOrderStatus() %></td>
+                        <td><%= o.getTotalPrice() %></td>
+                        <td><%= o.getOrderDate() %></td>
+                        <td><%= o.getPaymentCode() %></td>
+                        <td>
+                            <button type="button" class="showDetail"  data-toggle="modal" data-target="#detailOrder">상세보기</button>
+
+                            <% if(o.getOrderStatus().equals("결제대기")) { %>
+                                <button type="button" class="updateStatus">결제완료</button>
+                            <% } 
+                               else if(o.getOrderStatus().equals("결제완료")) { %>
+                                <button type="button" class="updateStatus">픽업완료</button>
+                            <% }
+                               else { %>
+                                <button type="button" class="updateStatus">결제대기</button>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% } %>
+
+                </tbody>
+            </table>
+        </div>
+
+       <!-- bottom : 하단 영역 --------------------------------------->
+       <!-- 
+       <div class="w_ bottom" align="center">
+            <button type="button" class="btn btn-secondary">초기화</button>
+            <button type="button" class="btn btn-secondary">수정하기</button>
+       </div>
+       -->
+   
+    </div>
+
+    <!-- The Modal -->
+    <div class="modal" id="detailOrder">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                <h4 class="modal-title">타이틀</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" align="center">
+                    <!-- <form action="" method="post"> -->
+                        <!-- 현재 비밀번호, 변경할 비밀번호, 변경할 비밀번호 재입력 -->
+                        <input type="hidden" name="userId" value="">
+                        <table style="text-align:center;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid black;">
+                                    <th>사진</th>
+                                    <th>상품번호</th>
+                                    <th>상품명</th>
+                                    <th>구매수량</th>
+                                    <th>가격</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalTbody"></tbody>
+                        </table>
+
+                        <br>
+
+                        <!-- <button type="submit" class="btn btn-secondary btn-sm" onclick="return validatePwd();">비밀번호 변경</button> -->
+                    <!-- </form> -->
+
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal end-->    
+
+
+
+    <!-- 페이징바 -->
+    <div align="center" class="paging-area">
+        	
+        <% if(currentPage != 1) { %>
+            <button onclick="location.href='<%= contextPath %>/orderListView.admin?currentPage=<%= currentPage - 1 %>';">&lt;</button>
+        <% } %>
+        
+        <% for(int p = startPage; p <= endPage; p++) { %>
+            <% if(p != currentPage) { %>
+                <button onclick="location.href='<%= contextPath %>/orderListView.admin?currentPage=<%= p %>';"><%= p %></button>
+            <% } else { %>
+                <!-- 현재 내가 보고있는 페이지일 경우는 클릭 안되게끔 -->
+                <button disabled><%= p %></button>
+            <% } %>
+        <% } %>
+        
+        <% if(currentPage != maxPage) { %>
+            <button onclick="location.href='<%= contextPath %>/orderListView.admin?currentPage=<%= currentPage + 1 %>';">&gt;</button>
+        <% } %>
+    </div>
+    <br><br>
+
+    <script>
+
+
+
+        $(function () {
+
+            $(".showDetail").click(function () {
+                var orderNo = $(this).parent().parent().children().eq(0).text();
+                
+                console.log(orderNo);
+
+                $.ajax({
+                    url : "opAjax.admin",
+                    data : {orderNo : orderNo},
+                    success : function (opList) {
+                        var title = "주문번호 " + orderNo + "번의 상세정보입니다.";
+                        var content = "";
+                        
+                        // console.log(opList);
+
+                        for(var i = 0; i < opList.length; i++) {
+
+                            content += "<tr>"
+                                    +            "<td><img src='" + opList[i].thumbnail + "' width='60px'></td>"
+                                    +            "<td>" + opList[i].productNo +"</td>"
+                                    +            "<td>" + opList[i].productName +"</td>"
+                                    +            "<td>" + opList[i].pCount + "병</td>"
+                                    +             "<td>" + opList[i].pPrice + "원</td>"
+                                    +      "</tr>"
+                                    +      "<br>";
+
+                        }
+
+                        $(".modal-title").html(title);
+
+                        $("#modalTbody").html(content);
+
+                    }
+                });
+            });
+
+            $(".updateStatus").click(function () {
+                var orderNo = $(this).parent().parent().children().eq(0).text();
+                console.log(orderNo)
+
+                $.ajax({
+                    url : "orderUpdateAjax.admin",
+                    data : {orderNo : orderNo},
+                    success : function (o) {
+                        var status = $(this).text()
+
+                        // console.log(result)
+
+                        $(this).parent().parent().children().eq(5).text(o.orderStatus);
+                        // $("#orderList").load(window.location.href + "orderList");
+                        location.reload()
+                    }
+                    
+                });
+
+            });
+
+        });
+
+
+
+    </script>
+   
+
+</body>
+</html>

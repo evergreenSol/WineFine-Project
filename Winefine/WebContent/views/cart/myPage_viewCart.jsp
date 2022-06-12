@@ -1,0 +1,234 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.ArrayList, com.winefine.cart.model.vo.Cart, com.winefine.store.model.vo.Product" %>
+<%
+	// 조회된 전체 장바구니 리스트 뽑기
+	ArrayList<Cart> list = (ArrayList<Cart>)request.getAttribute("cartList");
+
+
+    // 썸네일을 뽑기 위함
+    ArrayList<Product> plist = (ArrayList<Product>)request.getAttribute("list");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> WINEFINE :D </title>
+<style>
+
+	div{
+		box-sizing: border-box;
+	}
+	.wrap{
+		width: 1200px;
+		height: 1500px;
+		margin: auto;
+	}
+	.w_{
+		width: 100%;
+	}
+	
+	.top{
+      	height: 10%;
+    }
+    .body{
+        height: 70%;
+    }
+    .bottom{
+        height: 20%;
+    }
+    
+    /* - 구조 : body 영역_ 좌측 & 우측 분할 */
+    .myPage-body{
+        width: 100%;
+        height: 97%;
+    }
+    .myPage-body td.body_l{
+        width: 20%;
+        vertical-align: top;
+    }
+    .myPage-body td.body_r{
+        width: 80%;
+    }
+    
+    /* 상세 항목 */
+
+    .delete{
+        padding-left: 5%;
+        width: 90%;
+        height: 100%;
+    }
+    
+    table img {
+        width: 60px;
+        height: 225px;
+    }
+    
+    /* fix */
+    th{
+        font-size: medium;
+    }
+    #cartTable{
+        width: 100%;
+        border-bottom: 1px solid black;
+    }
+
+    #cartTable tbody>tr{
+        border-top: 1px solid black;
+
+        border-bottom: 1px solid black;
+
+    }
+
+    #cartTable>*{
+        text-align: center;
+    }
+
+    #cartTable tbody>*:hover{
+        background-color: gray;
+    }
+
+    #buy-button{
+        background-color: rgb(107, 50, 91);
+        color: white;
+        font-size: large;
+        border-radius: 5px;
+        border: none;
+        width: 150px;
+        height: 50px;
+    }
+
+   
+
+
+</style>
+</head>
+<body>
+	<div class="wrap">
+
+		<!-- top : hearder 삽입 영역 ------------------------------->
+		<div class="w_ top">
+			<!-- 헤더 START-->
+			<%@ include file="../common/header.jsp" %>
+			<!-- 헤더 END-->
+		</div>
+		
+		<!-- body : 카테고리 페이지 바디 영역 --------------------------------------------->
+       <div class="w_ body" style="height: auto; margin-bottom: 30px;">
+       
+        <br>   
+           <!-- body left(카테고리) & right(내용)-->
+           <table class="myPage-body">
+               <td class="body_l">
+                <%@ include file="../common/category-myPage.jsp" %>
+               </td>
+               <td class="body_r">
+                   <div class="delete">
+                        <!-- <h2>상품 주문내역</h2> -->
+						<b style="font-size:24px;">장바구니</b>
+			    		<hr color="black">
+			    		
+			    		
+			    		<!-- to 한일: 이 아래로 작성하면 됨! -->
+                        <form action="views/store/buy.jsp" method="post">
+                        <div>
+                            <table id="cartTable">
+                                
+                                <tbody>
+                                    <% int sum = 0; %>
+                                    <% if(list.isEmpty()) { %>
+                                        <!-- 리스트가 비어있을 경우 -->
+                                        <tr>
+                                            <td colspan="5">장바구니가 비었습니다.</td>
+                                        </tr>
+                                    <% } else { %>
+                                        <!-- 리스트가 비어있지 않을 경우 -->
+                                        <% for(Cart c : list) { %>
+                                            
+                                            <tr>
+                                                
+                                                <td>
+                                                    <!-- db에서 상품 사진 받아오기 썸네일 어떻게 받아오지???? -->
+                                                    <img src="<%= c.getThumbnail() %>">
+                                                </td>
+                                                <td>
+                                                    <text>
+                                                        <!-- db에서 상품명, 상품가격 받아오기-->                                                
+                                                        <span><%= c.getProductName() %></span>
+                                                        <br>
+                                                        <span><%= c.getPrice() %></span>원
+                                                    </text>
+                                                </td>
+                                                
+                                                <td>
+                                                    <div>
+                                                        <!-- 입력한 개수에 맞게 총 가격 변동 -->
+                                                        <input style="width: 40px; text-align: center;" type="number" value="<%= c.getBottle() %>" min="1">개
+                                                        <br>
+                                                        <!-- db에서 상품 가격 받아오기 -->
+                                                        <!--<input id="totalPrice" value="<%= c.getPrice() * c.getBottle() %>" style="border: none; width:70px;" readonly>
+                                                        원</input>-->
+                                                        <span><%= c.getPrice() * c.getBottle() %></span>원
+                                                        
+                                                    </div> 
+                                                </td>
+                                                <!-- 총 결제금액 -->
+                                                <% sum += c.getPrice() * c.getBottle(); %>
+                                                <td>
+                                                    <!-- 버튼 누르면 해당 행 삭제 -->
+                                                    <!-- <button id="delete-button" onclick="location.href='delete.ca'" >&times;</button> -->
+                                                    <a href="delete.ca?cno=<%= c.getCartNo() %>" class="btn btn-danger btn-sm">&times;</a>
+                                                </td>
+                                    
+                                                
+                                            </tr>
+                                        <% } %>
+                                    <% } %>
+                                    
+                                    
+                                </tbody>
+                            </table>
+                            
+                            <div id="total-form"  style="width: 40%; float:right;" align="right">
+                                <br>
+                                <!-- 장바구니 상품들의 가격 동적으로 받아오기 -->
+                                <h2>총 결제금액 
+                                    <br>
+                                    <input type="text" name="totalPrice" style="font-size:30px; border: none; width: 90%; text-align: right; display: inline;" readonly; value="<%= sum %>">원 
+                                    
+                                </h2>
+                                <hr color="black">
+                                <!-- 구매 결제 페이지로 -->
+                                <!--<button id="buy-button" type="submit" onclick="location.href='/buy.jsp'"> 구매하기 </button>-->
+                                <button id="buy-button" type="submit"> 구매하기 </button>                
+
+                                <!-- 지워도 됨 
+                                <script>
+                                    $(function(){
+                                        console.log($('#totalPrice').val());
+                                    });
+                                </script>
+                                -->
+                            </div>
+                        </div>
+                        </form>
+						
+                   </div>
+                </td>
+           </table>
+       </div>
+
+      
+       
+        <!-- bottom : 푸터바 영역 ---------------------------------------------------->
+        <div class="w_ bottom">
+            
+            <!-- 푸터바 START-->
+            <%@ include file="../common/footer.jsp" %>
+            <!-- 푸터바 END-->
+         
+        </div>
+		
+	</div>
+</body>
+</html>

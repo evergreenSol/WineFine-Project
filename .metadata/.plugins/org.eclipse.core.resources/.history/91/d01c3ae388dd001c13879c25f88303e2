@@ -1,0 +1,171 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> WINEFINE :D </title>
+        <style>
+            /* 전체 구조 잡기*/
+            div{
+                box-sizing: border-box;
+            }
+            .wrap{
+                width: 1200px;
+                height: 2000px;
+                margin: auto;
+                position: relative;
+            }
+            .w_{
+                /* border: 1px solid red; */
+                width: 100%;
+            }
+            .top{
+               height: 10%;
+            }
+            .body{
+                height: 45%;
+            }
+            .best{
+                height: 25%;
+            }
+            
+            .bottom{
+                height: 20%;
+                position: absolute;
+                bottom: 0;
+            }
+            
+            /* 상세 항목 */
+            .swiper {
+                width: 1200px;
+                height: 720px;
+            }
+
+            .main_pics {
+                width: 100%;
+                height: 100%;
+                
+            }
+
+            
+            .swiper-button-next {
+                
+            }
+
+            .swiper-button-prev {
+                background: url(/winefine/resources/images/prev.png) no-repeat;
+                background-position: center;
+                background-size: 75%;
+            }
+
+            .swiper-button-next {
+                background: url(/winefine/resources/images/next.png) no-repeat;
+                background-position: center;
+                background-size: 75%;
+            }
+
+            .swiper-button-prev::after,
+            .swiper-button-next::after {
+                display: none;
+            }
+
+            .swiper-pagination-bullet {
+                background: white !important; }
+    
+        </style>
+    </head>
+    
+    
+    <body>
+       <div class="wrap">
+
+           <!-- top : hearder 삽입 영역 ------------------------------->
+           <div class="w_ top">
+               <!-- 헤더 START-->
+               <%@ include file="../common/header.jsp" %>
+               <!-- 헤더 END-->
+           </div>
+    
+           <!-- body : 메인 페이지의 이미지 영역 --------------------------------------->
+           <div class="fixfoot">
+
+               <div class="w_ body content">
+                   <table align="center">
+                        
+                        <td height="720px">
+                            <!-- Slider main container -->
+                            <div class="swiper">
+                                <!-- Additional required wrapper -->
+                                <div class="swiper-wrapper">
+                                <!-- Slides -->
+                                <div class="swiper-slide">이름: <input type="text"></div>
+                                <div class="swiper-slide">나이: <input type="text"></div>
+                                <div class="swiper-slide">주소: <input type="text"</div>
+        
+                                </div>
+                                <!-- If we need pagination -->
+                                <div class="swiper-pagination"></div>
+                            
+                                <!-- If we need navigation buttons -->
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
+                            
+                                <!-- If we need scrollbar -->
+                                <!-- <div class="swiper-scrollbar"></div> -->
+                            </div> 
+                        </td> 
+                   </table>
+                   <br>
+                  </div>
+               <!-- best : 베스트셀러 영역 ------------------------------------------------->
+               <div class="w_ best">
+                   <!-- 베스트셀러 START-->
+                   <h1 class="delete">베스트셀러 인클루드예정</h1>
+                   <!-- 베스트셀러 END-->
+               </div>
+           </div>
+           
+           <!-- bottom : 푸터바 영역 ---------------------------------------------------->
+           <div class="w_ bottom">
+               <!-- 푸터바 START-->
+               <%@ include file="../common/footer.jsp" %>
+               <!-- 푸터바 END-->
+            
+           </div>
+       </div> 
+
+        <script>
+             const swiper = new Swiper('.swiper', {
+            // Optional parameters
+            // direction: 'vertical',
+            loop: true,
+            autoplay: {
+                delay: 3000
+            },
+        
+            // If we need pagination
+            pagination: {
+            el: '.swiper-pagination',
+            },
+        
+            // Navigation arrows
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            // autoHeight : true // 현재 활성화된 슬라이드 높이에 맞게 버튼이 움직인다. 
+        
+            // And if we need scrollbar
+            // scrollbar: {
+            //   el: '.swiper-scrollbar',
+            // },
+             }); 
+            
+
+        </script>
+
+    </body>
+    </html>

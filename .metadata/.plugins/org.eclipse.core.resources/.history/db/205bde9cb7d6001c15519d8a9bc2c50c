@@ -1,0 +1,95 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+
+	.outer { 
+		width: 1200px;
+		margin: auto;
+	}
+
+    .logo {
+        width: 400px;
+        float: left;
+    }
+
+    .logo>a {
+        margin-left: 100px;
+    }
+    
+    .top_right_menu { float: right;}
+
+    .top_right_menu li{
+        list-style-type: none;
+        float: left;
+        margin-right: 10px;
+    }
+    #top_service>a { margin-right: 100px;}
+
+    .menu {
+        display: table-cell;
+        height: 50px;
+        width: 200px;
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: black;
+        font-size: 20px;
+        font-weight: bold;
+        display: block; 
+        width: 100%;
+        height: 100%;
+        line-height: 50px; /* 장평조절: 위~ 아래에서 가운데 조정 */
+    }
+
+    .menu a:hover {
+        color:rgb(119, 45, 96)
+    }
+
+    .menu::after {
+            display:block;
+            content: '';
+            border-bottom: solid 5px rgb(119, 45, 96);  
+            transform: scaleX(0);  
+            transition: transform 250ms ease-in-out;
+        }
+
+    .menu:hover::after { transform: scaleX(0.6); }
+
+</style>
+</head>
+<body>
+    <div class=outer>
+	    <div class="top" >
+	        <div class="logo">
+	            <a href=""><img src="/winefine/resources/images/winefine_logo.png" width="250px"></a>
+	        </div>
+	        <ul class="top_right_menu">
+	            <li id="top_search"><a href=""><img src="/winefine/resources/images/icon_search.png"></a></li>
+	            <li id="top_cart"><a href=""><img src="../../resources/images/icon_cart.png"></a></li>
+	            <li id="top_mypage"><a href=""><img src="../../resources/images/icon_mypage.png"></a></li>
+	            <li id="top_service"><a href=""><img src="../../resources/images/icon_center.png"></a></li>
+	        </ul>
+	    </div>
+	
+	    <br clear="both">
+	    <br>
+	
+	    
+	    <div class="nav-area" align="center">
+	        <div class="menu"><a href="">와인스토어</a></div>
+	        <div class="menu"><a href="">소울와인찾기</a></div>
+	        <div class="menu"><a href="">게시판</a></div>
+	        <div class="menu"><a href="">고객센터</a></div>
+	    </div>
+    
+    </div>
+    
+
+</body>
+</html>

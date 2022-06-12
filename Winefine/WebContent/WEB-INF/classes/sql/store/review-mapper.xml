@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="selectListCount">
+		SELECT COUNT(*) "COUNT"
+		FROM REVIEW
+		WHERE STATUS = 'Y'
+	</entry>
+	
+	<entry key="selectList">	    
+	    SELECT *
+	    FROM(SELECT ROWNUM RNUM, REVIEW.*
+	         FROM(  SELECT REVIEW_NO, REVIEW_TITLE, R.CREATE_DATE, USER_ID, R.COUNT, REVIEW_PHOTO, R.REVIEW_CONTENT, ANSWER, ANSWER_DATE
+	                  FROM REVIEW R
+	                  JOIN MEMBER M ON (M.USER_NO = R.REVIEW_WRITER)
+	                  JOIN W_ORDER W ON(W.ORDER_NO = R.ORDER_NO)
+	                 WHERE R.STATUS= 'Y'
+	                   AND R.PRODUCT_NO = ? 
+	                 ORDER BY R.CREATE_DATE DESC) "REVIEW")
+	    WHERE RNUM BETWEEN ? AND ?
+	  
+	</entry>
+	
+	<entry key="selectListAll">
+		SELECT * 
+		FROM(SELECT ROWNUM RNUM, REVIEW.*
+		        FROM( SELECT REVIEW.*, PRODUCT_NAME, USER_ID
+                FROM REVIEW
+                JOIN MEMBER ON (USER_NO = REVIEW_WRITER)
+                JOIN PRODUCT ON(PRODUCT.PRODUCT_NO = REVIEW.PRODUCT_NO)
+                ORDER BY CREATE_DATE DESC) "REVIEW")
+		WHERE RNUM BETWEEN ? AND ?
+        
+	</entry>
+	
+	<entry key="updateStatus">
+	    UPDATE REVIEW
+	       SET STATUS = ?
+	         , ANSWER = ?
+	         , ANSWER_YN = 'Y'
+	         , ANSWER_DATE = SYSDATE
+	     WHERE REVIEW_NO = ?
+   </entry>
+	
+
+	<entry key="selectOrderForReview">
+	SELECT USER_ID, ORDER_NO
+	FROM W_ORDER
+	JOIN ORDER_PRODUCT USING(ORDER_NO)
+	JOIN MEMBER ON(ORDER_USER = USER_NO)
+	WHERE PRODUCT_NO = ?
+	  AND USER_NO = ?
+ 
+	
+	</entry>
+	
+	<entry key="insertReviewPhoto">
+	INSERT INTO REVIEW(REVIEW_NO, 
+                PRODUCT_NO,
+                REVIEW_WRITER,
+                ORDER_NO,
+                REVIEW_TITLE,
+                REVIEW_CONTENT,
+                REVIEW_PHOTO)
+	                
+	VALUES(SEQ_RNO.NEXTVAL,
+	        ?,
+	        ?,
+	        ?,
+	        ?,
+	        ?,
+	        ?)
+	</entry>
+	
+	<entry key="insertReviewPhotoX">
+	INSERT INTO REVIEW(REVIEW_NO, 
+                PRODUCT_NO,
+                REVIEW_WRITER,
+                ORDER_NO,
+                REVIEW_TITLE,
+                REVIEW_CONTENT)
+	                
+	VALUES(SEQ_RNO.NEXTVAL,
+	        ?,
+	        ?,
+	        ?,
+	        ?,
+	        ?)
+	</entry>
+	
+	<entry key="reviewListDate">
+		SELECT * 
+		FROM(SELECT ROWNUM RNUM, REVIEW.*
+		        FROM( SELECT REVIEW.*, PRODUCT_NAME, USER_ID
+                FROM REVIEW
+                JOIN MEMBER ON (USER_NO = REVIEW_WRITER)
+                JOIN PRODUCT ON(PRODUCT.PRODUCT_NO = REVIEW.PRODUCT_NO)
+                WHERE CREATE_DATE BETWEEN ? AND ?
+                ORDER BY CREATE_DATE DESC) "REVIEW")
+        WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectReviewList">
+		SELECT REVIEW_NO, PRODUCT_NAME, REVIEW_TITLE, R.CREATE_DATE, USER_ID, R.COUNT, REVIEW_PHOTO, R.REVIEW_CONTENT, ANSWER, ANSWER_DATE
+	      FROM REVIEW R
+	      JOIN PRODUCT USING(PRODUCT_NO)
+	      JOIN MEMBER M ON (M.USER_NO = R.REVIEW_WRITER)
+	      JOIN W_ORDER W ON(W.ORDER_NO = R.ORDER_NO)
+	     WHERE R.STATUS= 'Y'
+	       AND REVIEW_WRITER = ? 
+	     ORDER BY R.CREATE_DATE DESC
+	</entry>
+</properties>

@@ -1,0 +1,86 @@
+package com.winefine.store.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.winefine.common.model.vo.PageNation;
+import com.winefine.store.model.service.ProductService;
+import com.winefine.store.model.vo.Product;
+
+/**
+ * Servlet implementation class StoreListTypeController
+ */
+@WebServlet("/store.th_type")
+public class StoreListTypeController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public StoreListTypeController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		// 페이징처리 변수
+		int listCount; // 총 게시글 갯수 
+		int currentPage; // 현재 보여질 페이지(사용자가 요청한 페이지)
+		int pageLimit; // 한 페이지에 보일 버튼 갯수
+		int boardLimit; // 한 페이지에서 보이는 게시글 갯수 단위
+		
+		int maxPage; // 총 페이지 (버튼) 수 
+		int startPage; // currentPage 기준의 페이징바 시작점
+		int endPage; // currentPage 기준의 페이징바 끝점
+		
+		listCount = new ProductService().selectListCount();
+		currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		pageLimit = 5;
+		boardLimit = 9;
+		maxPage = (int)Math.ceil((double)listCount / boardLimit); 
+		
+		// startPage => pageLimit, currentPage 로 구함
+		startPage = ((currentPage-1) / pageLimit) * pageLimit + 1;
+		
+		// endPage => startPage, pageLimit 으로 구함
+		endPage = startPage + pageLimit - 1 ;
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		// 1) 페이지 정보들을 하나의 공간에 담아서 보내도록 VO 클래스 만들 것 (PageNation클래스)
+		PageNation pn = new PageNation(listCount, currentPage, pageLimit, boardLimit, 
+										maxPage, startPage, endPage);
+		
+		// 2) 현재 사용자가 요청한 페이지(currentPage)에 보여질 게시글 리스트 조회해오기
+		ArrayList<Product> list = new ProductService().sortProductType(pn);
+		
+		
+		
+		// 3) 요청에 따른 응답으로 보내줄 값(list)이 있으니 수화물("키",밸류) 보내기
+		request.setAttribute("list",list);
+		request.setAttribute("pn", pn); // > view단 jsp로 다시 넘어가기
+		
+		
+		request.getRequestDispatcher("views/store/storeThumbnailList_type.jsp").forward(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doGet(request, response);
+	}
+
+}

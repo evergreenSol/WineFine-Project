@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	
+	<entry key="selectEventList">
+		SELECT EVENT_NO, EVENT_TITLE, USER_ID, COUNT, THUMBNAIL, END_DATE 
+		FROM EVENT E
+		JOIN MEMBER ON (EVENT_WRITER = USER_NO)
+		WHERE E.STATUS = 'Y' 
+		ORDER BY CREATE_DATE DESC
+	</entry>
+	
+	<entry key="selectList">
+		SELECT EVENT_NO, EVENT_TITLE, USER_ID, CREATE_DATE, START_DATE, END_DATE, COUNT
+		FROM EVENT E
+		JOIN MEMBER ON (EVENT_WRITER = USER_NO)
+		WHERE E.STATUS ='Y'
+		ORDER BY CREATE_DATE DESC
+	</entry>
+	<entry key="insertEvent">
+		INSERT INTO EVENT(EVENT_NO
+		                , EVENT_TITLE
+		                , EVENT_WRITER
+		                , START_DATE
+		                , END_DATE
+		                , THUMBNAIL
+		                , CONTENT_PHOTO)
+		VALUES(SEQ_ENO.NEXTVAL
+		     , ?
+		     , ?
+		     , ?
+		     , ?
+		     , ?
+		     , ?)
+	</entry>
+	
+	<entry key="increaseCount">
+		UPDATE EVENT
+		   SET COUNT = COUNT + 1
+		 WHERE EVENT_NO = ?
+		   AND STATUS = 'Y'
+	</entry>
+	
+	<entry key="selectEvent">
+		SELECT EVENT_NO, EVENT_TITLE, USER_ID, CREATE_DATE, START_DATE, END_DATE, THUMBNAIL, CONTENT_PHOTO
+		FROM EVENT E
+		JOIN MEMBER ON (EVENT_WRITER = USER_NO)
+		WHERE EVENT_NO = ?
+		  AND E.STATUS = 'Y'
+	</entry>  
+	
+	<entry key="updateEvent">
+		UPDATE EVENT
+		   SET EVENT_TITLE = ?
+		     , START_DATE = ?
+		     , END_DATE = ?
+		     , THUMBNAIL = ?
+		     , CONTENT_PHOTO = ?
+		 WHERE EVENT_NO = ?   
+	</entry>  
+	
+	<entry key="deleteEvent">
+		UPDATE EVENT
+		   SET STATUS = 'N'
+		 WHERE EVENT_NO = ?
+	</entry>
+		
+</properties>

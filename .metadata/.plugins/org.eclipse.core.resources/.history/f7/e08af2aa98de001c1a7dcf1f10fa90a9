@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="selectOneqnaList">
+		SELECT ONE_QNA_NO, CATEGORY_NAME ,USER_ID, O.PHONE, ONE_QNA_TITLE, CREATE_DATE, ANSWER_DATE, ANSWER_YN
+		FROM ONE_QNA O
+		JOIN MEMBER ON (ONE_QNA_WRITER = USER_NO)
+		JOIN CATEGORY USING (CATEGORY_NO)
+		WHERE O.STATUS = 'Y'
+		ORDER BY ONE_QNA_NO DESC
+	</entry>
+	
+	<entry key="insertOneqna">
+	INSERT INTO ONE_QNA(ONE_QNA_NO
+					  , PHONE
+					  , CATEGORY_NO
+					  , ONE_QNA_TITLE
+					  , ONE_QNA_CONTENT
+					  , ONE_QNA_WRITER)
+	VALUES(SEQ_ONO.NEXTVAL
+	     , ?
+	     , ?
+	     , ?
+	     , ?
+	     , ?)	
+	</entry>
+	
+	<entry key="selectOneqna">
+		SELECT ONE_QNA_NO, USER_ID, CATEGORY_NAME ,CREATE_DATE, ONE_QNA_TITLE, ONE_QNA_CONTENT, ANSWER, ANSWER_DATE 
+		FROM ONE_QNA O
+		JOIN MEMBER ON (ONE_QNA_WRITER = USER_NO)
+		JOIN CATEGORY USING (CATEGORY_NO)
+		WHERE ONE_QNA_NO = ?
+		  AND O.STATUS = 'Y'
+	</entry>
+	
+	<entry key="selectCategoryList">
+		SELECT *
+		FROM CATEGORY
+	</entry>
+	
+	<entry key="updateOneqna">
+		UPDATE ONE_QNA
+		   SET ANSWER = ?
+		     , ANSWER_DATE = SYSDATE
+		     , ANSWER_YN = 'Y'
+		 WHERE ONE_QNA_NO = ?
+		   AND STATUS = 'Y'     
+	</entry>
+	
+	<entry key="deleteOneqna">
+		UPDATE ONE_QNA
+		   SET STATUS = 'N'
+		 WHERE ONE_QNA_NO = ?  
+	</entry>
+	
+	<entry key="selectOneqnaListMp">
+		SELECT ONE_QNA_NO, CATEGORY_NAME ,USER_ID, O.PHONE, ONE_QNA_TITLE, CREATE_DATE, ANSWER_DATE, ANSWER_YN
+		FROM ONE_QNA O
+		JOIN MEMBER ON (ONE_QNA_WRITER = USER_NO)
+		JOIN CATEGORY USING (CATEGORY_NO)
+		WHERE O.STATUS = 'Y'
+		  AND USER_NO = ?
+		ORDER BY ONE_QNA_NO DESC
+	</entry>
+	
+</properties>
